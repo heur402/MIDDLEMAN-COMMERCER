@@ -513,4 +513,4 @@ function MobileTabBar({ totalItems, isAuthenticated }) {
       })}
     </div>
   )
-}
+} 
