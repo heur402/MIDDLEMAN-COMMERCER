@@ -2,16 +2,7 @@ import Modal from './Modal'
 import Button from './Button'
 
 /**
- * Reusable confirmation dialog built on top of Modal.
- *
- * @param {boolean}  isOpen
- * @param {function} onClose
- * @param {function} onConfirm
- * @param {string}   title
- * @param {string}   message
- * @param {string}   confirmLabel
- * @param {'primary'|'danger'} confirmVariant
- * @param {boolean}  loading
+ * Reusable confirmation modal for destructive actions.
  */
 export default function ConfirmDialog({
   isOpen,
