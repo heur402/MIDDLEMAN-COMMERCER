@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Search } from 'lucide-react'
 import PageWrapper from '../../components/layout/PageWrapper'
+import Accordion from '../../components/common/Accordion'
+import { FAQ_CATEGORIES } from '../../data/faqData'
 
 export default function FAQPage() {
   const [query, setQuery] = useState('')
