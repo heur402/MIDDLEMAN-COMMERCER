@@ -33,7 +33,7 @@ export default function AppRouter() {
       {/* ── Public ─────────────────────────────────────────────────── */}
       <Route path="/" element={<HomePage />} />
       <Route path="/faq" element={<FAQPage />} />
-      <Route path="/contact" element={<HomePage />} />
+      <Route path="/contact" element={<ContactPage />} />
       <Route path="/privacy" element={<HomePage />} />
       <Route path="/terms" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
