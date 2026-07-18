@@ -1,5 +1,9 @@
-import { Mail, MessageCircle, Clock } from 'lucide-react'
+import { useState } from 'react'
+import { Mail, MessageCircle, Clock, Send, CheckCircle } from 'lucide-react'
 import PageWrapper from '../../components/layout/PageWrapper'
+import Input from '../../components/common/Input'
+import Textarea from '../../components/common/Textarea'
+import Button from '../../components/common/Button'
 
 export default function ContactPage() {
   return (
