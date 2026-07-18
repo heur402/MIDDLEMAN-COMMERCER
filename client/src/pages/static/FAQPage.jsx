@@ -45,7 +45,19 @@ export default function FAQPage() {
           return <Accordion key={cat.title} title={cat.title} items={filtered.items} />
         })}
 
-        {/* No results */}
+        {/* Still have questions */}
+        <div className="mt-12 bg-orange-50 border border-orange-200 rounded-2xl p-8 text-center">
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Still have questions?</h2>
+          <p className="text-sm text-gray-600 mb-5">
+            Can't find the answer you're looking for? Our support team is here to help.
+          </p>
+          <a
+            href="/contact"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors text-sm"
+          >
+            Contact Support
+          </a>
+        </div>
         {FAQ_CATEGORIES.every((cat) =>
           cat.items.every(
             (item) =>
