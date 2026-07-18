@@ -1,19 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { productsApi } from '../api/products.api'
 
-/**
- * Fetch a paginated, filtered product list.
- * Re-fetches automatically when params change.
- *
- * @param {object} params  Query params: { page, limit, category, condition, sort, minPrice, maxPrice, q }
- * @returns {{ products, pagination, loading, error, refetch }}
- */
 export function useProducts(params = {}) {
-  const [products, setProducts]   = useState([])
+  const [products, setProducts]     = useState([])
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 })
-  const [loading, setLoading]     = useState(true)
-  const [error, setError]         = useState(null)
-
+  const [loading, setLoading]       = useState(true)
+  const [error, setError]           = useState(null)
   const key = JSON.stringify(params)
 
   const fetch = useCallback(async () => {
@@ -41,10 +33,6 @@ export function useProducts(params = {}) {
   return { products, pagination, loading, error, refetch: fetch }
 }
 
-/**
- * Fetch a single product by ID.
- * @param {string} id
- */
 export function useProduct(id) {
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -53,8 +41,7 @@ export function useProduct(id) {
   useEffect(() => {
     if (!id) return
     setLoading(true)
-    productsApi
-      .getById(id)
+    productsApi.getById(id)
       .then(({ data }) => setProduct(data.data))
       .catch((err) => setError(err?.response?.data?.message ?? 'Product not found'))
       .finally(() => setLoading(false))
