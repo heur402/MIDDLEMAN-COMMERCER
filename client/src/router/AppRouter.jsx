@@ -11,6 +11,9 @@ import CartPage from '../pages/CartPage'
 import NotFoundPage from '../pages/NotFoundPage'
 import StorefrontPage from '../pages/storefront/StorefrontPage'
 import OrderConfirmationPage from '../pages/OrderConfirmationPage'
+import ContactPage from '../pages/static/ContactPage'
+import FAQPage from '../pages/static/FAQPage'
+import PrivacyPage from '../pages/static/PrivacyPage'
 
 // Buyer pages (authenticated)
 import CheckoutPage from '../pages/CheckoutPage'
@@ -28,6 +31,9 @@ export default function AppRouter() {
   return (
     <Routes>
       {/* ── Public ─────────────────────────────────────────────────── */}
+      <Route path="/" element={<HomePage />} />
+      <Route path="/faq" element={<HomePage />} />
+      <Route path="/" element={<HomePage />} />
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
