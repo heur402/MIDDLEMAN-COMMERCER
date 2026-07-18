@@ -31,7 +31,33 @@ export default function FAQPage() {
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-12">
-        {/* Accordion content will go here */}
+        {FAQ_CATEGORIES.map((cat) => {
+          const filtered = {
+            ...cat,
+            items: cat.items.filter(
+              (item) =>
+                query.trim() === '' ||
+                item.question.toLowerCase().includes(query.toLowerCase()) ||
+                item.answer.toLowerCase().includes(query.toLowerCase())
+            ),
+          }
+          if (filtered.items.length === 0) return null
+          return <Accordion key={cat.title} title={cat.title} items={filtered.items} />
+        })}
+
+        {/* No results */}
+        {FAQ_CATEGORIES.every((cat) =>
+          cat.items.every(
+            (item) =>
+              query.trim() !== '' &&
+              !item.question.toLowerCase().includes(query.toLowerCase()) &&
+              !item.answer.toLowerCase().includes(query.toLowerCase())
+          )
+        ) && (
+          <p className="text-center text-gray-400 py-16 text-sm">
+            No results for &quot;{query}&quot;. Try a different search term.
+          </p>
+        )}
       </div>
     </PageWrapper>
   )
