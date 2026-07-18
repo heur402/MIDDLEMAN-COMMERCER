@@ -1,3 +1,4 @@
+import { Mail, MessageCircle, Clock } from 'lucide-react'
 import PageWrapper from '../../components/layout/PageWrapper'
 
 export default function ContactPage() {
