@@ -35,7 +35,7 @@ export default function AppRouter() {
       <Route path="/faq" element={<HomePage />} />
       <Route path="/contact" element={<HomePage />} />
       <Route path="/privacy" element={<HomePage />} />
-      
+      <Route path="/terms" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/browse" element={<ProductListingPage />} />
