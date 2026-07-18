@@ -33,7 +33,48 @@ export default function ContactPage() {
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-12">
-        {/* Info cards */}
+        {/* Contact form */}
+        {sent ? (
+          <div className="bg-green-50 border border-green-200 rounded-2xl p-10 text-center">
+            <CheckCircle size={48} className="mx-auto text-green-500 mb-4" />
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Message sent!</h2>
+            <p className="text-sm text-gray-600">We'll get back to you within 24 hours.</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-8 space-y-4">
+            <h2 className="text-lg font-bold text-gray-900 mb-2">Send us a message</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                label="Your name" required
+                placeholder="Jane Smith"
+                value={form.name}
+                onChange={(e) => set('name', e.target.value)}
+              />
+              <Input
+                label="Email address" type="email" required
+                placeholder="you@example.com"
+                value={form.email}
+                onChange={(e) => set('email', e.target.value)}
+              />
+            </div>
+            <Input
+              label="Subject" required
+              placeholder="What's your question about?"
+              value={form.subject}
+              onChange={(e) => set('subject', e.target.value)}
+            />
+            <Textarea
+              label="Message" required rows={6}
+              placeholder="Describe your issue or question in detail..."
+              value={form.message}
+              onChange={(e) => set('message', e.target.value)}
+            />
+            <Button type="submit" loading={sending} size="lg">
+              <Send size={16} />
+              Send Message
+            </Button>
+          </form>
+        )}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
           {[
             { icon: Mail,           label: 'Email',        value: 'support@middleman.com',    sub: 'We reply within 24 h' },
