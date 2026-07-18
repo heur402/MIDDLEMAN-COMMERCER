@@ -1,15 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ordersApi } from '../api/orders.api'
 
-/**
- * Fetch buyer's order list with optional status filter.
- */
 export function useBuyerOrders(params = {}) {
-  const [orders, setOrders]       = useState([])
+  const [orders, setOrders]         = useState([])
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 })
-  const [loading, setLoading]     = useState(true)
-  const [error, setError]         = useState(null)
-
+  const [loading, setLoading]       = useState(true)
+  const [error, setError]           = useState(null)
   const key = JSON.stringify(params)
 
   const fetch = useCallback(async () => {
@@ -27,13 +23,9 @@ export function useBuyerOrders(params = {}) {
   }, [key]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => { fetch() }, [fetch])
-
   return { orders, pagination, loading, error, refetch: fetch }
 }
 
-/**
- * Fetch a single order by ID (buyer view).
- */
 export function useOrder(id) {
   const [order, setOrder]   = useState(null)
   const [loading, setLoading] = useState(true)
@@ -53,18 +45,13 @@ export function useOrder(id) {
   }, [id])
 
   useEffect(() => { fetch() }, [fetch])
-
   return { order, loading, error, refetch: fetch }
 }
 
-/**
- * Fetch seller's incoming orders.
- */
 export function useSellerOrders(params = {}) {
-  const [orders, setOrders]       = useState([])
+  const [orders, setOrders]         = useState([])
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 })
-  const [loading, setLoading]     = useState(true)
-
+  const [loading, setLoading]       = useState(true)
   const key = JSON.stringify(params)
 
   const fetch = useCallback(async () => {
@@ -81,6 +68,5 @@ export function useSellerOrders(params = {}) {
   }, [key]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => { fetch() }, [fetch])
-
   return { orders, pagination, loading, refetch: fetch }
 }
