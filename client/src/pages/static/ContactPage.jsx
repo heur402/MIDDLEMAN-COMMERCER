@@ -6,6 +6,20 @@ import Textarea from '../../components/common/Textarea'
 import Button from '../../components/common/Button'
 
 export default function ContactPage() {
+  const [form, setForm]       = useState({ name: '', email: '', subject: '', message: '' })
+  const [sending, setSending] = useState(false)
+  const [sent, setSent]       = useState(false)
+
+  function set(field, value) { setForm((f) => ({ ...f, [field]: value })) }
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    setSending(true)
+    // Stub — real form submission wired in Phase 2
+    await new Promise((r) => setTimeout(r, 1000))
+    setSending(false)
+    setSent(true)
+  }
   return (
     <PageWrapper>
       {/* Hero */}
