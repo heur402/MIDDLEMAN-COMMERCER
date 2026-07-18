@@ -1,6 +1,10 @@
+import { useState } from 'react'
+import { Search } from 'lucide-react'
 import PageWrapper from '../../components/layout/PageWrapper'
 
 export default function FAQPage() {
+  const [query, setQuery] = useState('')
+
   return (
     <PageWrapper>
       {/* Hero */}
@@ -10,11 +14,22 @@ export default function FAQPage() {
           <p className="text-orange-100 text-base max-w-xl mx-auto">
             Everything you need to know about buying, selling, and staying safe on MiddleMan.
           </p>
+          {/* Search */}
+          <div className="mt-6 flex items-center max-w-md mx-auto bg-white rounded-xl overflow-hidden shadow-lg">
+            <Search size={16} className="text-gray-400 ml-4 shrink-0" />
+            <input
+              type="text"
+              placeholder="Search questions..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="flex-1 px-3 py-3 text-sm text-gray-900 outline-none"
+            />
+          </div>
         </div>
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-12">
-        {/* Content will go here */}
+        {/* Accordion content will go here */}
       </div>
     </PageWrapper>
   )
