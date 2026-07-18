@@ -2,7 +2,7 @@ import { forwardRef } from 'react'
 import { cn } from '../../utils/cn'
 
 /**
- * Controlled <select> wrapper matching the Input component style.
+ * Controlled <select> wrapper that matches the Input component style.
  */
 const Select = forwardRef(function Select(
   { label, error, helperText, options = [], placeholder, className, containerClassName, required, ...props },
