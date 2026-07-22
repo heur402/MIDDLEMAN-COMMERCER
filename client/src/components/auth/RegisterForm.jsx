@@ -45,15 +45,16 @@ export default function RegisterForm() {
         return
       }
 
-      // New accounts register as sellers — go straight to seller dashboard
-      const roles = data?.data?.roles ?? []
-      if (roles.includes('admin')) {
-        navigate('/admin')
-      } else if (roles.includes('seller')) {
-        navigate('/seller/dashboard')
-      } else {
-        navigate('/seller/dashboard') // encourage new users to set up their store
+      // Registration page is seller-focused — auto-enable seller role
+      // (the server creates buyer by default; becomeSeller adds the seller role)
+      try {
+        const { authApi } = await import('../../api/auth.api')
+        await authApi.becomeSeller()
+      } catch {
+        // ignore if it fails — user can enable from profile
       }
+
+      navigate('/seller/dashboard')
     } catch (err) {
       const msg = err.response?.data?.message ?? 'Registration failed. Try again.'
       if (msg.toLowerCase().includes('email')) {
