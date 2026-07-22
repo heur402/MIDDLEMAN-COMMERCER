@@ -13,9 +13,9 @@ const orderItemSchema = new mongoose.Schema(
   {
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
     sellerId:  { type: mongoose.Schema.Types.ObjectId, ref: 'User',    required: true },
-    title:     { type: String, required: true },    // snapshot at purchase time
-    price:     { type: Number, required: true },    // snapshot at purchase time
-    image:     { type: String, default: null },     // snapshot at purchase time
+    title:     { type: String, required: true },
+    price:     { type: Number, required: true },
+    image:     { type: String, default: null },
     qty:       { type: Number, required: true, min: 1 },
   },
   { _id: false }
@@ -32,9 +32,26 @@ const shippingAddressSchema = new mongoose.Schema(
   { _id: false }
 )
 
+/**
+ * Guest buyer info — collected at checkout when no account exists.
+ * buyerId is null for guests; guestEmail is used to look up orders.
+ */
+const guestBuyerSchema = new mongoose.Schema(
+  {
+    name:  { type: String, default: '' },
+    email: { type: String, default: '' },
+    phone: { type: String, default: '' },
+  },
+  { _id: false }
+)
+
 const orderSchema = new mongoose.Schema(
   {
-    buyerId:         { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    // buyerId is null for guest orders
+    buyerId:         { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    // Guest buyer info — only populated when buyerId is null
+    guestBuyer:      { type: guestBuyerSchema, default: null },
+
     sellerId:        { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     items:           { type: [orderItemSchema], required: true },
     status: {
@@ -54,6 +71,7 @@ const orderSchema = new mongoose.Schema(
 // ── Indexes ───────────────────────────────────────────────────────────────────
 orderSchema.index({ buyerId: 1, createdAt: -1 })
 orderSchema.index({ sellerId: 1, createdAt: -1 })
+orderSchema.index({ 'guestBuyer.email': 1 })
 orderSchema.index({ status: 1 })
 
 export const Order = mongoose.model('Order', orderSchema)
