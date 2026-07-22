@@ -252,17 +252,24 @@ export default function Navbar() {
                 </div>
               ) : (
                 <div className="flex items-center gap-1 ml-2">
+                  {/* Track order — visible to guests */}
+                  <Link
+                    to="/track-order"
+                    className="hidden sm:flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-orange-500 border border-gray-200 rounded-full transition-colors"
+                  >
+                    <Package size={13} /> Track Order
+                  </Link>
                   <Link
                     to="/login"
                     className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-orange-500 transition-colors rounded-full"
                   >
-                    Login
+                    Seller Login
                   </Link>
                   <Link
                     to="/register"
                     className="px-4 py-2 text-sm font-medium bg-orange-500 hover:bg-orange-600 text-white rounded-full transition-colors shadow-sm hover:shadow-md"
                   >
-                    Register
+                    Sell on MiddleMan
                   </Link>
                 </div>
               )}
