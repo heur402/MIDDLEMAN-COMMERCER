@@ -37,9 +37,23 @@ export default function RegisterForm() {
     if (!validate()) return
     setLoading(true)
     try {
-      await register({ name: form.name, email: form.email, password: form.password })
+      const data = await register({ name: form.name, email: form.email, password: form.password })
       toast.success('Account created! Welcome 🎉')
-      navigate(redirect)
+
+      if (redirect) {
+        navigate(redirect)
+        return
+      }
+
+      // New accounts register as sellers — go straight to seller dashboard
+      const roles = data?.data?.roles ?? []
+      if (roles.includes('admin')) {
+        navigate('/admin')
+      } else if (roles.includes('seller')) {
+        navigate('/seller/dashboard')
+      } else {
+        navigate('/seller/dashboard') // encourage new users to set up their store
+      }
     } catch (err) {
       const msg = err.response?.data?.message ?? 'Registration failed. Try again.'
       if (msg.toLowerCase().includes('email')) {
