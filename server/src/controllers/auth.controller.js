@@ -11,13 +11,17 @@ import { asyncHandler } from '../utils/asyncHandler.js'
 
 // ── POST /api/auth/register ───────────────────────────────────────────────────
 export const register = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body
+  const { name, email, password, asSeller } = req.body
 
   const existing = await User.findOne({ email })
   if (existing) throw ApiError.conflict('An account with that email already exists')
 
   const passwordHash = await hashPassword(password)
-  const user = await User.create({ name, email, passwordHash, roles: ['buyer'] })
+
+  // When registering via the seller portal, grant both buyer + seller roles
+  const roles = asSeller ? ['buyer', 'seller'] : ['buyer']
+
+  const user = await User.create({ name, email, passwordHash, roles })
 
   const accessToken  = generateAccessToken({ userId: user._id, roles: user.roles })
   const refreshToken = generateRefreshToken({ userId: user._id })
