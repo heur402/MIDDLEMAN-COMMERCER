@@ -44,7 +44,7 @@ export default function LoginForm() {
         return
       }
 
-      // Smart role-based redirect
+      // Smart role-based redirect — data.data is the user object
       const roles = data?.data?.roles ?? []
       if (roles.includes('admin')) {
         navigate('/admin')
