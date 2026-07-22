@@ -15,7 +15,16 @@ const shippingAddressSchema = z.object({
   country: z.string().trim().min(1, 'Country is required'),
 })
 
-/** Shape of a single sub-order within the checkout payload */
+/**
+ * Guest buyer info — required when placing a guest order.
+ */
+const guestBuyerSchema = z.object({
+  name:  z.string().trim().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Valid email is required'),
+  phone: z.string().trim().default(''),
+})
+
+/** Single sub-order (one per seller) within the checkout payload */
 export const singleOrderSchema = z.object({
   sellerId:        z.string().min(1, 'sellerId is required'),
   items:           z.array(orderItemSchema).min(1, 'At least one item is required'),
@@ -23,9 +32,14 @@ export const singleOrderSchema = z.object({
   totalAmount:     z.number().min(0),
 })
 
-/** POST /api/orders — array of sub-orders (one per seller) */
+/**
+ * POST /api/orders
+ * guestBuyer is required when no auth token is provided.
+ * When authenticated it may be omitted.
+ */
 export const placeOrderSchema = z.object({
-  orders: z.array(singleOrderSchema).min(1, 'At least one order is required'),
+  orders:     z.array(singleOrderSchema).min(1, 'At least one order is required'),
+  guestBuyer: guestBuyerSchema.optional(),
 })
 
 /** PATCH /api/seller/orders/:id/status */
@@ -35,8 +49,18 @@ export const updateOrderStatusSchema = z.object({
   note:           z.string().trim().max(300).optional(),
 })
 
+/** GET query params for order lists */
 export const orderQuerySchema = z.object({
   page:   z.coerce.number().int().min(1).default(1),
   limit:  z.coerce.number().int().min(1).max(100).default(10),
   status: z.enum(['pending', 'confirmed', 'shipped', 'delivered', 'completed', 'cancelled']).optional(),
+})
+
+/**
+ * GET /api/orders/track
+ * Guest can look up their orders by email + orderId.
+ */
+export const trackOrderSchema = z.object({
+  orderId: z.string().min(1, 'orderId is required'),
+  email:   z.string().email('Valid email is required'),
 })
