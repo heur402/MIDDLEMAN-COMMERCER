@@ -7,19 +7,19 @@ export const createProductSchema = z.object({
   title: z
     .string({ required_error: 'Title is required' })
     .trim()
-    .min(3, 'Title must be at least 3 characters')
+    .min(1, 'Product name is required')
     .max(150, 'Title must be 150 characters or fewer'),
   description: z
-    .string({ required_error: 'Description is required' })
+    .string()
     .trim()
-    .min(10, 'Description must be at least 10 characters')
-    .max(5000, 'Description must be 5000 characters or fewer'),
+    .max(5000)
+    .default(''),                                          // optional
   price: z
     .number({ required_error: 'Price is required', invalid_type_error: 'Price must be a number' })
     .min(0, 'Price cannot be negative'),
   originalPrice: z.number().min(0).optional().nullable(),
-  category: z.enum(CATEGORIES, { required_error: 'Category is required' }),
-  condition: z.enum(CONDITIONS, { required_error: 'Condition is required' }),
+  category: z.enum(CATEGORIES).default('other'),          // defaults to 'other'
+  condition: z.enum(CONDITIONS).default('new'),           // defaults to 'new'
   stock: z
     .number({ required_error: 'Stock is required', invalid_type_error: 'Stock must be a number' })
     .int('Stock must be a whole number')
