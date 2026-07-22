@@ -14,6 +14,7 @@ export const registerSchema = z.object({
     .string({ required_error: 'Password is required' })
     .min(8, 'Password must be at least 8 characters')
     .max(128, 'Password is too long'),
+  asSeller: z.boolean().default(true),   // default true — register page is for sellers
 })
 
 export const loginSchema = z.object({
