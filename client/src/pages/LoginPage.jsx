@@ -1,7 +1,7 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import LoginForm from '../components/auth/LoginForm'
-import { ShieldCheck } from 'lucide-react'
+import { Store, ShieldCheck } from 'lucide-react'
 
 export default function LoginPage() {
   const { isAuthenticated } = useAuth()
@@ -12,24 +12,38 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* Brand */}
         <div className="text-center mb-8">
-          <span className="text-3xl font-black">
-            <span className="text-orange-500">Middle</span>
-            <span className="text-gray-900">Man</span>
-          </span>
-          <p className="text-gray-500 text-sm mt-1">Sign in to your account</p>
+          <Link to="/">
+            <span className="text-3xl font-black">
+              <span className="text-orange-500">Middle</span>
+              <span className="text-gray-900">Man</span>
+            </span>
+          </Link>
+          <p className="text-gray-500 text-sm mt-1">Seller &amp; Admin Portal</p>
+        </div>
+
+        {/* Info banner — buyers don't need an account */}
+        <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mb-5 flex items-start gap-2">
+          <Store size={16} className="text-blue-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-xs font-semibold text-blue-800">Shopping without an account?</p>
+            <p className="text-xs text-blue-700 mt-0.5">
+              You don't need to log in to browse or buy.{' '}
+              <Link to="/browse" className="underline font-medium">Start shopping →</Link>
+            </p>
+          </div>
         </div>
 
         {/* Trust signal */}
         <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-2.5 mb-6">
           <ShieldCheck size={16} className="text-green-600 shrink-0" />
           <p className="text-xs text-green-700">
-            Your transactions are protected by MiddleMan's buyer guarantee.
+            Seller accounts are protected with secure JWT authentication.
           </p>
         </div>
 
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-          <h1 className="text-xl font-bold text-gray-900 mb-6">Welcome back</h1>
+          <h1 className="text-xl font-bold text-gray-900 mb-6">Sign in to your account</h1>
           <LoginForm />
         </div>
       </div>
