@@ -33,6 +33,7 @@ export default function Footer() {
               <FooterLink to="/browse?sort=price_asc">Best Prices</FooterLink>
               <FooterLink to="/browse?category=electronics">Electronics</FooterLink>
               <FooterLink to="/browse?category=clothing">Clothing</FooterLink>
+              <FooterLink to="/track-order">Track My Order</FooterLink>
             </ul>
           </div>
 
