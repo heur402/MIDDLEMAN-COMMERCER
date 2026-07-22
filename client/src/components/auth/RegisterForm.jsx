@@ -37,24 +37,20 @@ export default function RegisterForm() {
     if (!validate()) return
     setLoading(true)
     try {
-      const data = await register({ name: form.name, email: form.email, password: form.password })
-      toast.success('Account created! Welcome 🎉')
+      // asSeller: true → server grants ['buyer', 'seller'] roles immediately
+      await register({
+        name:     form.name,
+        email:    form.email,
+        password: form.password,
+        asSeller: true,
+      })
+      toast.success('Seller account created! 🎉')
 
       if (redirect) {
         navigate(redirect)
-        return
+      } else {
+        navigate('/seller/dashboard')
       }
-
-      // Registration page is seller-focused — auto-enable seller role
-      // (the server creates buyer by default; becomeSeller adds the seller role)
-      try {
-        const { authApi } = await import('../../api/auth.api')
-        await authApi.becomeSeller()
-      } catch {
-        // ignore if it fails — user can enable from profile
-      }
-
-      navigate('/seller/dashboard')
     } catch (err) {
       const msg = err.response?.data?.message ?? 'Registration failed. Try again.'
       if (msg.toLowerCase().includes('email')) {
@@ -127,7 +123,7 @@ export default function RegisterForm() {
       />
 
       <Button type="submit" fullWidth size="lg" loading={loading}>
-        Create Account
+        Create Seller Account
       </Button>
 
       <p className="text-center text-sm text-gray-600">
@@ -138,7 +134,10 @@ export default function RegisterForm() {
       </p>
 
       <p className="text-center text-xs text-gray-400">
-        By registering, you agree to our Terms of Service and Privacy Policy.
+        By registering you agree to our{' '}
+        <Link to="/terms" className="underline hover:text-orange-500">Terms</Link>{' '}
+        and{' '}
+        <Link to="/privacy" className="underline hover:text-orange-500">Privacy Policy</Link>.
       </p>
     </form>
   )
