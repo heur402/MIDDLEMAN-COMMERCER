@@ -460,11 +460,17 @@ function MobileTabBar({ totalItems, isAuthenticated }) {
     )
   } else {
     allTabs.push(
-      { 
-        to: '/login', 
-        icon: User, 
-        label: 'Account',
-        matchPaths: ['/login', '/register']
+      {
+        to: '/track-order',
+        icon: Package,
+        label: 'Track',
+        matchPaths: ['/track-order'],
+      },
+      {
+        to: '/seller/dashboard',
+        icon: Store,
+        label: 'Sell',
+        matchPaths: ['/login', '/register', '/seller'],
       }
     )
   }
