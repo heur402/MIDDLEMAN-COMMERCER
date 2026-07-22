@@ -10,7 +10,7 @@ export default function LoginForm() {
   const { login } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const redirect = searchParams.get('redirect') ?? '/'
+  const redirect = searchParams.get('redirect') // explicit redirect from URL param
 
   const [form, setForm] = useState({ email: '', password: '' })
   const [showPassword, setShowPassword] = useState(false)
@@ -35,9 +35,24 @@ export default function LoginForm() {
     if (!validate()) return
     setLoading(true)
     try {
-      await login(form)
+      const data = await login(form)
       toast.success('Welcome back!')
-      navigate(redirect)
+
+      // If an explicit redirect was requested (e.g. from ProtectedRoute), use it
+      if (redirect) {
+        navigate(redirect)
+        return
+      }
+
+      // Smart role-based redirect
+      const roles = data?.data?.roles ?? []
+      if (roles.includes('admin')) {
+        navigate('/admin')
+      } else if (roles.includes('seller')) {
+        navigate('/seller/dashboard')
+      } else {
+        navigate('/dashboard')
+      }
     } catch (err) {
       const msg = err.response?.data?.message ?? 'Invalid email or password'
       toast.error(msg)
@@ -90,7 +105,7 @@ export default function LoginForm() {
       <p className="text-center text-sm text-gray-600">
         Don&apos;t have an account?{' '}
         <Link
-          to={`/register${redirect !== '/' ? `?redirect=${redirect}` : ''}`}
+          to={`/register${redirect ? `?redirect=${redirect}` : ''}`}
           className="text-orange-500 font-medium hover:underline"
         >
           Register
