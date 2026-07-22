@@ -10,7 +10,7 @@ export default function RegisterForm() {
   const { register } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const redirect = searchParams.get('redirect') ?? '/'
+  const redirect = searchParams.get('redirect') // explicit redirect from ProtectedRoute
 
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' })
   const [showPassword, setShowPassword] = useState(false)
