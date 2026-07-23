@@ -19,6 +19,7 @@ import conversationRoutes from './routes/conversation.routes.js'
 import reviewRoutes       from './routes/review.routes.js'
 import disputeRoutes      from './routes/dispute.routes.js'
 import adminRoutes        from './routes/admin.routes.js'
+import categoryRoutes     from './routes/category.routes.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -58,6 +59,7 @@ app.use('/api/conversations',  conversationRoutes)
 app.use('/api/reviews',        reviewRoutes)
 app.use('/api/disputes',       disputeRoutes)
 app.use('/api/admin',          adminRoutes)
+app.use('/api/categories',     categoryRoutes)
 
 // ── 404 fallback ──────────────────────────────────────────────────────────────
 app.use((_req, res) => {
