@@ -17,3 +17,12 @@ export const addAddressSchema = z.object({
 })
 
 export const updateAddressSchema = addAddressSchema.partial()
+
+export const adminUpdateUserSchema = z.object({
+  name:       z.string().trim().min(2).max(60).optional(),
+  email:      z.string().trim().email('Invalid email address').optional(),
+  phone:      z.string().trim().max(20).optional().nullable(),
+  roles:      z.array(z.enum(['buyer', 'seller', 'admin'])).min(1, 'At least one role is required').optional(),
+  isVerified: z.boolean().optional(),
+})
+
