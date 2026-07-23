@@ -5,6 +5,8 @@ export const adminApi = {
   getUsers:     (params) => api.get('/admin/users', { params }),
   getUserById:  (id)     => api.get(`/admin/users/${id}`),
   banUser:      (id, data) => api.patch(`/admin/users/${id}/ban`, data),
+  updateUser:   (id, data) => api.patch(`/admin/users/${id}`, data),
+  deleteUser:   (id)       => api.delete(`/admin/users/${id}`),
 
   // Listings
   getListings:      (params) => api.get('/admin/listings', { params }),
