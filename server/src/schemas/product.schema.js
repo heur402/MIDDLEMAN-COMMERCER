@@ -1,6 +1,5 @@
 import { z } from 'zod'
 
-const CATEGORIES = ['electronics', 'clothing', 'home', 'beauty', 'sports', 'toys', 'books', 'automotive', 'other']
 const CONDITIONS = ['new', 'like_new', 'good', 'fair', 'poor']
 
 export const createProductSchema = z.object({
@@ -13,13 +12,16 @@ export const createProductSchema = z.object({
     .string()
     .trim()
     .max(5000)
-    .default(''),                                          // optional
+    .default(''),
   price: z
     .number({ required_error: 'Price is required', invalid_type_error: 'Price must be a number' })
     .min(0, 'Price cannot be negative'),
   originalPrice: z.number().min(0).optional().nullable(),
-  category: z.enum(CATEGORIES).default('other'),          // defaults to 'other'
-  condition: z.enum(CONDITIONS).default('new'),           // defaults to 'new'
+  // category is now a MongoDB ObjectId string pointing to admin-created Category
+  category: z
+    .string({ required_error: 'Category is required' })
+    .min(1, 'Category is required'),
+  condition: z.enum(CONDITIONS).default('new'),
   stock: z
     .number({ required_error: 'Stock is required', invalid_type_error: 'Stock must be a number' })
     .int('Stock must be a whole number')
@@ -33,7 +35,7 @@ export const updateProductSchema = createProductSchema.partial()
 export const productQuerySchema = z.object({
   page:      z.coerce.number().int().min(1).default(1),
   limit:     z.coerce.number().int().min(1).max(100).default(20),
-  category:  z.enum(CATEGORIES).optional(),
+  category:  z.string().optional(),   // ObjectId string
   condition: z.enum(CONDITIONS).optional(),
   minPrice:  z.coerce.number().min(0).optional(),
   maxPrice:  z.coerce.number().min(0).optional(),
