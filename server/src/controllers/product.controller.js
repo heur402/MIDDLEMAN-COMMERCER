@@ -29,7 +29,10 @@ export const listProducts = asyncHandler(async (req, res) => {
     page,
     limit,
     sort: sortMap[sort] ?? sortMap.newest,
-    populate: { path: 'sellerId', select: 'name avatar rating reviewCount' },
+    populate: [
+      { path: 'sellerId', select: 'name avatar rating reviewCount' },
+      { path: 'category', select: 'name slug icon' },
+    ],
   })
 
   res.json({ success: true, ...result })
@@ -63,7 +66,10 @@ export const searchProducts = asyncHandler(async (req, res) => {
     page,
     limit,
     sort: sortMap[sort] ?? { score: { $meta: 'textScore' } },
-    populate: { path: 'sellerId', select: 'name avatar rating reviewCount' },
+    populate: [
+      { path: 'sellerId', select: 'name avatar rating reviewCount' },
+      { path: 'category', select: 'name slug icon' },
+    ],
   })
 
   res.json({ success: true, ...result })
@@ -73,6 +79,7 @@ export const searchProducts = asyncHandler(async (req, res) => {
 export const getProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id)
     .populate('sellerId', 'name avatar rating reviewCount createdAt')
+    .populate('category', 'name slug icon')
   if (!product) throw ApiError.notFound('Product not found')
   res.json({ success: true, data: product })
 })
