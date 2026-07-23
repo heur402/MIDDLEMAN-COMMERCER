@@ -33,13 +33,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Trust signal */}
-        <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-2.5 mb-6">
-          <ShieldCheck size={16} className="text-green-600 shrink-0" />
-          <p className="text-xs text-green-700">
-            Seller accounts are protected with secure JWT authentication.
-          </p>
-        </div>
+       
 
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
