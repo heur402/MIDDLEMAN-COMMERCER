@@ -30,6 +30,53 @@ export const getUser = asyncHandler(async (req, res) => {
   res.json({ success: true, data: user })
 })
 
+// ── PATCH /api/admin/users/:id ───────────────────────────────────────────────
+export const updateUser = asyncHandler(async (req, res) => {
+  const { name, email, phone, roles, isVerified } = req.body
+  const user = await User.findById(req.params.id)
+  if (!user) throw ApiError.notFound('User not found')
+
+  if (user.roles.includes('admin') && req.user.userId !== user._id.toString()) {
+    throw ApiError.forbidden('Cannot modify other admin profiles')
+  }
+
+  if (name !== undefined) user.name = name
+  if (email !== undefined) {
+    const existing = await User.findOne({ email, _id: { $ne: user._id } })
+    if (existing) throw ApiError.conflict('Email is already in use')
+    user.email = email
+  }
+  if (phone !== undefined) user.phone = phone
+  if (roles !== undefined) {
+    if (user.roles.includes('admin') && !roles.includes('admin')) {
+      throw ApiError.forbidden('Cannot remove admin role from yourself or other admins')
+    }
+    user.roles = roles
+  }
+  if (isVerified !== undefined) user.isVerified = isVerified
+
+  await user.save()
+  res.json({ success: true, data: user.toPublicJSON() })
+})
+
+// ── DELETE /api/admin/users/:id ──────────────────────────────────────────────
+export const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id)
+  if (!user) throw ApiError.notFound('User not found')
+
+  if (user.roles.includes('admin')) {
+    throw ApiError.forbidden('Cannot delete an admin account')
+  }
+
+  // Deactivate all products belonging to this seller
+  if (user.roles.includes('seller')) {
+    await Product.updateMany({ sellerId: user._id }, { status: 'inactive' })
+  }
+
+  await user.deleteOne()
+  res.json({ success: true, message: 'User account deleted successfully' })
+})
+
 // ── PATCH /api/admin/users/:id/ban ────────────────────────────────────────────
 export const banUser = asyncHandler(async (req, res) => {
   const { banned, reason } = req.body
