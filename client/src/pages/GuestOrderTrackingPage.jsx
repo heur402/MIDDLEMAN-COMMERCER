@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Search, Package, MapPin, Clock, Truck, CheckCircle, XCircle } from 'lucide-react'
+import { useSearchParams } from 'react-router-dom'
+import { Search, Package, MapPin, Truck, CheckCircle } from 'lucide-react'
 import PageWrapper from '../components/layout/PageWrapper'
 import Button from '../components/common/Button'
 import OrderTimeline from '../components/orders/OrderTimeline'
@@ -9,7 +10,8 @@ import { formatCurrency } from '../utils/formatCurrency'
 import { formatDate } from '../utils/formatDate'
 
 export default function GuestOrderTrackingPage() {
-  const [orderId, setOrderId] = useState('')
+  const [searchParams] = useSearchParams()
+  const [orderId, setOrderId] = useState(() => searchParams.get('orderId') ?? '')
   const [order, setOrder]     = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError]     = useState('')
@@ -87,7 +89,7 @@ export default function GuestOrderTrackingPage() {
                 <div>
                   <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold">Order</p>
                   <p className="text-base font-bold text-gray-900 font-mono">
-                    #{order._id.slice(-10).toUpperCase()}
+                    #{order.orderRef ?? order._id.slice(-10).toUpperCase()}
                   </p>
                   <p className="text-xs text-gray-400 mt-0.5">{formatDate(order.createdAt)}</p>
                 </div>

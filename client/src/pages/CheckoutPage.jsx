@@ -64,9 +64,9 @@ export default function CheckoutPage() {
       const { data } = await ordersApi.place(payload)
       clearCart()
 
-      const orderIds = data.data?.map((o) => o._id) ?? []
+      const orderRefs = data.data?.map((o) => o.orderRef) ?? []
       const emailParam = isAuthenticated ? '' : `&email=${encodeURIComponent(guest.email)}`
-      navigate(`/order-confirmation?ids=${orderIds.join(',')}${emailParam}`)
+      navigate(`/order-confirmation?ids=${orderRefs.join(',')}${emailParam}`)
       toast.success('Order placed!')
     } catch (err) {
       toast.error(err.response?.data?.message ?? 'Failed to place order. Please try again.')

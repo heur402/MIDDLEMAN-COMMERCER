@@ -27,7 +27,7 @@ export default function OrderConfirmationPage() {
           <p className="text-sm text-gray-500 mb-2">
             Order ID{ids.length > 1 ? 's' : ''}:{' '}
             <span className="font-mono font-semibold">
-              {ids.map((id) => id.slice(-8).toUpperCase()).join(', ')}
+              {ids.join(', ')}
             </span>
           </p>
         )}

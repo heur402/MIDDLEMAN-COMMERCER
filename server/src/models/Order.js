@@ -47,6 +47,7 @@ const guestBuyerSchema = new mongoose.Schema(
 
 const orderSchema = new mongoose.Schema(
   {
+    orderRef:        { type: String, unique: true, index: true },
     // buyerId is null for guest orders
     buyerId:         { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     // Guest buyer info — only populated when buyerId is null

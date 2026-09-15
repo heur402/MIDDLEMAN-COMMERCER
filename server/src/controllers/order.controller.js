@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import { Order } from '../models/Order.js'
 import { Product } from '../models/Product.js'
 import { ApiError } from '../utils/ApiError.js'
@@ -6,9 +7,10 @@ import { paginate } from '../utils/paginate.js'
 import { notifyOrderStatus } from '../services/notification.service.js'
 
 // ── POST /api/orders ──────────────────────────────────────────────────────────
-// Works for both authenticated buyers AND guests.
-// If authenticated → buyerId is set, guestBuyer is null.
-// If guest → buyerId is null, guestBuyer must be provided in body.
+function generateOrderRef(id) {
+  return id.toString().slice(-10).toUpperCase()
+}
+
 export const placeOrders = asyncHandler(async (req, res) => {
   const { orders: orderPayloads, guestBuyer } = req.body
   const buyerId = req.user?.userId ?? null // optional auth
@@ -54,6 +56,7 @@ export const placeOrders = asyncHandler(async (req, res) => {
 
     // Create order
     const order = await Order.create({
+      orderRef:    generateOrderRef(new mongoose.Types.ObjectId()),
       buyerId:     buyerId,
       guestBuyer:  buyerId ? null : guestBuyer,
       sellerId,
@@ -100,12 +103,12 @@ export const getBuyerOrder = asyncHandler(async (req, res) => {
   res.json({ success: true, data: order })
 })
 
-// ── GET /api/orders/track — lookup by orderId only ──────────────────────────
+// ── GET /api/orders/track — lookup by orderRef ──────────────────────────────
 export const trackGuestOrder = asyncHandler(async (req, res) => {
   const { orderId } = req.query
   if (!orderId) throw ApiError.badRequest('orderId is required')
 
-  const order = await Order.findById(orderId).catch(() => null)
+  const order = await Order.findOne({ orderRef: orderId.toUpperCase() })
   if (!order) throw ApiError.notFound('Order not found. Check your Order ID.')
 
   res.json({ success: true, data: order })
