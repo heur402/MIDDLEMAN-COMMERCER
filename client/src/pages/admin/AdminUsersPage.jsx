@@ -336,7 +336,7 @@ export default function AdminUsersPage() {
                                   >
                                     <Edit2 size={15} />
                                   </button>
-                  <button
+                                  <button
                                     onClick={() => { setNotifyUser(u); setNotifyTitle(''); setNotifyMessage('') }}
                                     className="p-1.5 hover:bg-gray-100 rounded text-gray-600 hover:text-blue-500 transition-colors"
                                     title="Send Notification"
