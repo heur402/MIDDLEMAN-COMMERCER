@@ -28,7 +28,7 @@ export default function ProductForm({ initialValues = {}, onSubmit, loading }) {
     title:       initialValues.title       ?? '',
     description: initialValues.description ?? '',
     price:       initialValues.price       ?? '',
-    category:    initialValues.category    ?? 'other',
+    category:    initialValues.category?._id ?? initialValues.category ?? '',
     condition:   initialValues.condition   ?? 'new',
     stock:       initialValues.stock       ?? 1,
     status:      initialValues.status      ?? 'published',
@@ -46,9 +46,10 @@ export default function ProductForm({ initialValues = {}, onSubmit, loading }) {
 
   function validate() {
     const e = {}
-    if (!form.title.trim())                         e.title  = 'Product name is required'
-    if (!form.price || Number(form.price) < 0)      e.price  = 'Valid price required'
-    if (form.stock === '' || Number(form.stock) < 0) e.stock  = 'Stock must be 0 or more'
+    if (!form.title.trim())                          e.title    = 'Product name is required'
+    if (!form.price || Number(form.price) < 0)       e.price    = 'Valid price required'
+    if (form.stock === '' || Number(form.stock) < 0) e.stock    = 'Stock must be 0 or more'
+    if (!form.category)                              e.category = 'Please select a category'
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -148,15 +149,18 @@ export default function ProductForm({ initialValues = {}, onSubmit, loading }) {
             <select
               value={form.category}
               onChange={(e) => set('category', e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className={`w-full rounded-md border px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400 ${
+                errors.category ? 'border-red-400' : 'border-gray-300'
+              }`}
             >
               <option value="">Select a category</option>
               {categories.map((c) => (
-                <option key={c._id} value={c.slug}>
+                <option key={c._id} value={c._id}>
                   {c.icon ? `${c.icon} ` : ''}{c.name}
                 </option>
               ))}
             </select>
+            {errors.category && <p className="text-xs text-red-500">{errors.category}</p>}
           </div>
 
           <div className="flex flex-col gap-1">

@@ -20,7 +20,7 @@ export const createProductSchema = z.object({
   // category is now a MongoDB ObjectId string pointing to admin-created Category
   category: z
     .string({ required_error: 'Category is required' })
-    .min(1, 'Category is required'),
+    .regex(/^[a-f\d]{24}$/i, 'Invalid category'),
   condition: z.enum(CONDITIONS).default('new'),
   stock: z
     .number({ required_error: 'Stock is required', invalid_type_error: 'Stock must be a number' })
