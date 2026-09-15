@@ -1,9 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import {
-  Search, ShoppingCart, MessageCircle, User, Menu, X,
-  ChevronDown, Store, LayoutDashboard, LogOut, Package,
-  ShieldCheck, Home, Heart, Settings,
+  Search, ShoppingCart, MessageCircle, Menu, X,
+  ChevronDown, Store, LogOut, Package, Home, Heart,
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
@@ -18,25 +17,18 @@ const CATEGORIES = [
   { label: 'Sports', path: '/browse?category=sports' },
 ]
 
-const QUICK_LINKS = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/orders', icon: Package, label: 'My Orders' },
-  { to: '/wishlist', icon: Heart, label: 'Wishlist' },
-  { to: '/settings', icon: Settings, label: 'Settings' },
-]
-
 // ─── Main Component ──────────────────────────────────────────
 export default function Navbar() {
   const { user, isAuthenticated, isSeller, isAdmin, logout } = useAuth()
   const { totalItems } = useCart()
   const navigate = useNavigate()
   const location = useLocation()
-  
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [scrolled, setScrolled] = useState(false)
-  
+
   const userMenuRef = useRef(null)
   const searchInputRef = useRef(null)
 
@@ -75,7 +67,7 @@ export default function Navbar() {
   const handleLogout = async () => {
     setUserMenuOpen(false)
     await logout()
-    navigate('/')
+    navigate('/login')
   }
 
   const handleKeyDown = (e) => {
@@ -135,12 +127,7 @@ export default function Navbar() {
 
             {/* Actions */}
             <div className="ml-auto flex items-center gap-0.5">
-              {/* Wishlist */}
-              {isAuthenticated && (
-                <ActionButton to="/wishlist" icon={Heart} label="Wishlist" />
-              )}
-
-              {/* Cart */}
+              {/* Cart — always visible */}
               <ActionButton
                 to="/cart"
                 icon={ShoppingCart}
@@ -148,111 +135,18 @@ export default function Navbar() {
                 badge={totalItems}
               />
 
-              {/* Messages */}
-              {isAuthenticated && (
-                <ActionButton to="/messages" icon={MessageCircle} label="Messages" />
-              )}
-
-              {/* Auth / User Menu */}
-              {isAuthenticated ? (
-                <div className="relative" ref={userMenuRef}>
-                  <button
-                    onClick={() => setUserMenuOpen((v) => !v)}
-                    className={`flex items-center gap-1.5 px-2 py-1.5 rounded-full hover:bg-gray-100 transition-all duration-200 ${
-                      userMenuOpen ? 'bg-gray-100' : ''
-                    }`}
-                    aria-expanded={userMenuOpen}
-                    aria-haspopup="true"
-                    aria-label="User menu"
-                  >
-                    {user?.avatar ? (
-                      <img
-                        src={user.avatar}
-                        alt={user.name}
-                        className="w-8 h-8 rounded-full object-cover ring-2 ring-orange-200"
-                      />
-                    ) : (
-                      <span className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-sm font-bold shadow-sm">
-                        {user?.name?.[0]?.toUpperCase() || 'U'}
-                      </span>
-                    )}
-                    <ChevronDown 
-                      size={14} 
-                      className={`text-gray-500 hidden sm:block transition-transform duration-200 ${
-                        userMenuOpen ? 'rotate-180' : ''
-                      }`} 
-                    />
-                  </button>
-
-                  {/* Dropdown Menu */}
-                  {userMenuOpen && (
-                    <div 
-                      className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100/80 py-2 z-20 animate-slideDown origin-top-right"
-                      role="menu"
-                    >
-                      {/* User Info */}
-                      <div className="px-4 py-3 border-b border-gray-100">
-                        <p className="text-sm font-semibold text-gray-900 truncate">{user?.name}</p>
-                        <p className="text-xs text-gray-500 truncate">{user?.email}</p>
-                        {user?.role && (
-                          <span className="inline-block mt-1 px-2 py-0.5 text-[10px] font-medium bg-orange-100 text-orange-700 rounded-full">
-                            {user.role}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Quick Links */}
-                      {QUICK_LINKS.map(({ to, icon: Icon, label }) => (
-                        <MenuLink
-                          key={to}
-                          to={to}
-                          icon={Icon}
-                          label={label}
-                          onClick={() => setUserMenuOpen(false)}
-                        />
-                      ))}
-
-                      {/* Seller/Admin Links */}
-                      {(isSeller || isAdmin) && (
-                        <div className="border-t border-gray-100 my-1 pt-1">
-                          {isSeller && (
-                            <MenuLink
-                              to="/seller/dashboard"
-                              icon={Store}
-                              label="Seller Dashboard"
-                              onClick={() => setUserMenuOpen(false)}
-                              highlight
-                            />
-                          )}
-                          {isAdmin && (
-                            <MenuLink
-                              to="/admin"
-                              icon={ShieldCheck}
-                              label="Admin Panel"
-                              onClick={() => setUserMenuOpen(false)}
-                              highlight
-                            />
-                          )}
-                        </div>
-                      )}
-
-                      {/* Logout */}
-                      <div className="border-t border-gray-100 mt-1 pt-1">
-                        <button
-                          onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                          role="menuitem"
-                        >
-                          <LogOut size={16} />
-                          Sign out
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
+              {/* Seller browsing the store — show a back-to-dashboard pill */}
+              {(isSeller || isAdmin) ? (
+                <Link
+                  to={isAdmin ? '/admin' : '/seller/dashboard'}
+                  className="hidden sm:flex items-center gap-1.5 ml-2 px-3 py-1.5 text-xs font-semibold text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-200 rounded-full transition-colors"
+                >
+                  <Store size={13} />
+                  {isAdmin ? 'Admin Panel' : 'Seller Dashboard'}
+                </Link>
               ) : (
+                // Guest: show login / register CTAs
                 <div className="flex items-center gap-1 ml-2">
-                  {/* Track order — visible to guests */}
                   <Link
                     to="/track-order"
                     className="hidden sm:flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-orange-500 border border-gray-200 rounded-full transition-colors"
@@ -356,10 +250,7 @@ export default function Navbar() {
       </header>
 
       {/* ── Mobile Bottom Tab Bar ── */}
-      <MobileTabBar 
-        totalItems={totalItems} 
-        isAuthenticated={isAuthenticated} 
-      />
+      <MobileTabBar totalItems={totalItems} />
     </>
   )
 }
@@ -415,79 +306,27 @@ function MobileNavLink({ to, children, highlight, onClick }) {
   )
 }
 
-// ─── Fixed MobileTabBar ──────────────────────────────────────
-function MobileTabBar({ totalItems, isAuthenticated }) {
+function MobileTabBar({ totalItems }) {
   const location = useLocation()
-  
-  // Define all possible tabs with their paths
-  const allTabs = [
-    { 
-      to: '/', 
-      icon: Home, 
-      label: 'Home',
-      matchPaths: ['/']
-    },
-    { 
-      to: '/browse', 
-      icon: Search, 
-      label: 'Browse',
-      matchPaths: ['/browse']
-    },
-    { 
-      to: '/cart', 
-      icon: ShoppingCart, 
-      label: 'Cart',
-      badge: totalItems,
-      matchPaths: ['/cart']
-    },
+
+  const tabs = [
+    { to: '/',        icon: Home,         label: 'Home',   matchPaths: ['/'] },
+    { to: '/browse',  icon: Search,       label: 'Browse', matchPaths: ['/browse'] },
+    { to: '/cart',    icon: ShoppingCart, label: 'Cart',   badge: totalItems, matchPaths: ['/cart'] },
+    { to: '/track-order', icon: Package,  label: 'Track',  matchPaths: ['/track-order'] },
+    { to: '/login',   icon: Store,        label: 'Sell',   matchPaths: ['/login', '/register'] },
   ]
 
-  // Add conditional tabs
-  if (isAuthenticated) {
-    allTabs.push(
-      { 
-        to: '/messages', 
-        icon: MessageCircle, 
-        label: 'Chat',
-        matchPaths: ['/messages']
-      },
-      { 
-        to: '/dashboard', 
-        icon: User, 
-        label: 'Account',
-        matchPaths: ['/dashboard', '/profile', '/settings', '/orders', '/wishlist']
-      }
-    )
-  } else {
-    allTabs.push(
-      {
-        to: '/track-order',
-        icon: Package,
-        label: 'Track',
-        matchPaths: ['/track-order'],
-      },
-      {
-        to: '/seller/dashboard',
-        icon: Store,
-        label: 'Sell',
-        matchPaths: ['/login', '/register', '/seller'],
-      }
-    )
-  }
-
-  // Check if a tab is active
-  const isTabActive = (tab) => {
-    return tab.matchPaths.some(path => location.pathname === path) ||
-           (tab.to === '/browse' && location.pathname === '/browse')
-  }
+  const isTabActive = (tab) =>
+    tab.matchPaths.some((p) => location.pathname === p)
 
   return (
-    <div 
+    <div
       className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white/95 backdrop-blur-sm border-t border-gray-200 flex items-center justify-around h-16 safe-bottom shadow-lg"
       role="navigation"
       aria-label="Bottom navigation"
     >
-      {allTabs.map((tab) => {
+      {tabs.map((tab) => {
         const isActive = isTabActive(tab)
         const Icon = tab.icon
         

@@ -4,8 +4,12 @@ import LoginForm from '../components/auth/LoginForm'
 import { Store, ShieldCheck } from 'lucide-react'
 
 export default function LoginPage() {
-  const { isAuthenticated } = useAuth()
-  if (isAuthenticated) return <Navigate to="/" replace />
+  const { isAuthenticated, isSeller, isAdmin } = useAuth()
+  if (isAuthenticated) {
+    if (isAdmin) return <Navigate to="/admin" replace />
+    if (isSeller) return <Navigate to="/seller/dashboard" replace />
+    return <Navigate to="/" replace />
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">

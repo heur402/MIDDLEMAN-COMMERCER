@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import {
-  TrendingUp, Package, ShoppingBag, LogOut, Menu, X, Store, Bell,
+  TrendingUp, Package, ShoppingBag, LogOut, Menu, Store, Plus,
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { cn } from '../../utils/cn'
 
 const NAV = [
-  { to: '/seller/dashboard', icon: TrendingUp, label: 'Overview'    },
-  { to: '/seller/listings',  icon: Package,    label: 'My Listings' },
-  { to: '/seller/orders',    icon: ShoppingBag,label: 'Orders'      },
+  { to: '/seller/dashboard',      icon: TrendingUp,  label: 'Overview'    },
+  { to: '/seller/listings',       icon: Package,     label: 'My Listings' },
+  { to: '/seller/listings/new',   icon: Plus,        label: 'New Listing', highlight: true },
+  { to: '/seller/orders',         icon: ShoppingBag, label: 'Orders'      },
 ]
 
 export default function SellerLayout({ children }) {
@@ -57,7 +58,7 @@ export default function SellerLayout({ children }) {
           <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest px-3 mb-2">
             Dashboard
           </p>
-          {NAV.map(({ to, icon: Icon, label }) => (
+          {NAV.map(({ to, icon: Icon, label, highlight }) => (
             <NavLink
               key={to}
               to={to}
@@ -66,7 +67,9 @@ export default function SellerLayout({ children }) {
               className={({ isActive }) =>
                 cn(
                   'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                  isActive
+                  highlight && !isActive
+                    ? 'bg-orange-500 text-white hover:bg-orange-600'
+                    : isActive
                     ? 'bg-orange-50 text-orange-600'
                     : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                 )
@@ -117,6 +120,13 @@ export default function SellerLayout({ children }) {
           <span className="text-[10px] font-semibold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">
             Seller
           </span>
+          {/* Mobile quick-add button */}
+          <NavLink
+            to="/seller/listings/new"
+            className="ml-auto flex items-center gap-1.5 px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-lg transition-colors"
+          >
+            <Plus size={14} /> New Listing
+          </NavLink>
         </header>
 
         {/* Page content */}

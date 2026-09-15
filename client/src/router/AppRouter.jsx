@@ -1,5 +1,6 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import ProtectedRoute from './ProtectedRoute'
+import { useAuth } from '../context/AuthContext'
 
 // Public pages
 import HomePage                from '../pages/HomePage'
@@ -41,11 +42,20 @@ import SellerOrderDetailPage   from '../pages/seller/SellerOrderDetailPage'
 import AdminDashboardPage  from '../pages/admin/AdminDashboardPage'
 
 export default function AppRouter() {
+  const { isAuthenticated, isSeller, isAdmin } = useAuth()
+
+  // Sellers and admins should never land on the buyer home
+  function RootRedirect() {
+    if (isAdmin)  return <Navigate to="/admin" replace />
+    if (isSeller) return <Navigate to="/seller/dashboard" replace />
+    return <HomePage />
+  }
+
   return (
     <Routes>
 
       {/* ── Public — no login ever required for buyers ──────────── */}
-      <Route path="/"                  element={<HomePage />} />
+      <Route path="/" element={<RootRedirect />} />
       <Route path="/browse"            element={<ProductListingPage />} />
       <Route path="/products/:id"      element={<ProductDetailPage />} />
       <Route path="/store/:sellerId"   element={<StorefrontPage />} />
