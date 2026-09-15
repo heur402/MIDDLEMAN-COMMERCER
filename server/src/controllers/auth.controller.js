@@ -11,15 +11,24 @@ import { asyncHandler } from '../utils/asyncHandler.js'
 
 // ── POST /api/auth/register ───────────────────────────────────────────────────
 export const register = asyncHandler(async (req, res) => {
-  const { name, email, password, asSeller } = req.body
+  const { name, email, password, asSeller, asAdmin, adminSecret } = req.body
 
   const existing = await User.findOne({ email })
   if (existing) throw ApiError.conflict('An account with that email already exists')
 
+  // Admin registration requires a secret key
+  if (asAdmin) {
+    const secret = process.env.ADMIN_REGISTER_SECRET
+    if (!secret || adminSecret !== secret) {
+      throw ApiError.forbidden('Invalid admin secret key')
+    }
+  }
+
   const passwordHash = await hashPassword(password)
 
-  // When registering via the seller portal, grant both buyer + seller roles
-  const roles = asSeller ? ['buyer', 'seller'] : ['buyer']
+  let roles = ['buyer']
+  if (asAdmin)  roles = ['buyer', 'seller', 'admin']
+  else if (asSeller) roles = ['buyer', 'seller']
 
   const user = await User.create({ name, email, passwordHash, roles })
 

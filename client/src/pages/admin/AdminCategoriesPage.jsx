@@ -1,22 +1,13 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import {
-  Tag, Plus, Trash2, Edit2, Check, X, Users, Package, AlertTriangle, TrendingUp,
+  Tag, Plus, Trash2, Edit2,
 } from 'lucide-react'
-import PageWrapper from '../../components/layout/PageWrapper'
+import AdminLayout from '../../components/layout/AdminLayout'
 import { PageSpinner } from '../../components/common/Spinner'
 import { categoriesApi } from '../../api/categories.api'
 import Button from '../../components/common/Button'
 import Input from '../../components/common/Input'
 import toast from 'react-hot-toast'
-
-const ADMIN_NAV = [
-  { to: '/admin',          icon: TrendingUp,   label: 'Overview'   },
-  { to: '/admin/users',    icon: Users,        label: 'Users'      },
-  { to: '/admin/listings', icon: Package,      label: 'Listings'   },
-  { to: '/admin/disputes', icon: AlertTriangle,label: 'Disputes'   },
-  { to: '/admin/categories',icon: Tag,          label: 'Categories' },
-]
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState([])
@@ -107,31 +98,7 @@ export default function AdminCategoriesPage() {
   }
 
   return (
-    <PageWrapper>
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex gap-6">
-
-          {/* Sidebar */}
-          <aside className="hidden md:flex flex-col w-52 shrink-0 gap-0.5">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3 px-3">Admin</p>
-            {ADMIN_NAV.map(({ to, icon: Icon, label }) => (
-              <Link
-                key={to}
-                to={to}
-                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  to === '/admin/categories'
-                    ? 'bg-orange-50 text-orange-600 font-bold'
-                    : 'text-gray-600 hover:bg-orange-50 hover:text-orange-600'
-                }`}
-              >
-                <Icon size={16} />
-                {label}
-              </Link>
-            ))}
-          </aside>
-
-          {/* Main */}
-          <div className="flex-1 min-w-0">
+    <AdminLayout>
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Manage Categories</h1>
@@ -260,9 +227,6 @@ export default function AdminCategoriesPage() {
                 </div>
               </div>
             )}
-          </div>
-        </div>
-      </div>
-    </PageWrapper>
+    </AdminLayout>
   )
 }

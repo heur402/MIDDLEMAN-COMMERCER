@@ -77,8 +77,8 @@ export default function ProductDetailPage() {
           {product.category && (
             <>
               <ChevronRight size={12} />
-              <Link to={`/browse?category=${product.category}`} className="hover:text-orange-500 capitalize">
-                {product.category}
+              <Link to={`/browse?category=${product.category._id ?? product.category}`} className="hover:text-orange-500 capitalize">
+                {product.category.name ?? product.category}
               </Link>
             </>
           )}
@@ -95,7 +95,7 @@ export default function ProductDetailPage() {
             {/* Title + badges */}
             <div>
               <div className="flex flex-wrap gap-2 mb-2">
-                <Badge variant="default" className="capitalize">{product.category}</Badge>
+                <Badge variant="default" className="capitalize">{product.category?.name ?? product.category}</Badge>
                 <Badge variant={product.condition === 'new' ? 'new' : 'default'}>
                   {CONDITION_LABELS[product.condition] ?? product.condition}
                 </Badge>

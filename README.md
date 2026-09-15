@@ -212,5 +212,3 @@ client/src/
 ## License
 
 MIT
-
-

@@ -39,12 +39,16 @@ import SellerOrdersPage        from '../pages/seller/SellerOrdersPage'
 import SellerOrderDetailPage   from '../pages/seller/SellerOrderDetailPage'
 
 // Admin pages
-import AdminDashboardPage  from '../pages/admin/AdminDashboardPage'
+import AdminLoginPage       from '../pages/AdminLoginPage'
+import AdminRegisterPage    from '../pages/AdminRegisterPage'
+import AdminDashboardPage   from '../pages/admin/AdminDashboardPage'
+import AdminUsersPage       from '../pages/admin/AdminUsersPage'
+import AdminListingsPage    from '../pages/admin/AdminListingsPage'
+import AdminCategoriesPage  from '../pages/admin/AdminCategoriesPage'
 
 export default function AppRouter() {
   const { isSeller, isAdmin } = useAuth()
 
-  // Unknown route: send sellers/admins to their dashboard, everyone else to 404
   function FallbackRoute() {
     if (isAdmin)  return <Navigate to="/admin" replace />
     if (isSeller) return <Navigate to="/seller/dashboard" replace />
@@ -54,44 +58,38 @@ export default function AppRouter() {
   return (
     <Routes>
 
-      {/* ── Public — no login ever required for buyers ──────────── */}
-      <Route path="/"                  element={<HomePage />} />
-      <Route path="/browse"            element={<ProductListingPage />} />
-      <Route path="/products/:id"      element={<ProductDetailPage />} />
-      <Route path="/store/:sellerId"   element={<StorefrontPage />} />
-      <Route path="/cart"              element={<CartPage />} />
-      <Route path="/checkout"          element={<CheckoutPage />} />
+      {/* ── Public ──────────────────────────────────────────────── */}
+      <Route path="/"                   element={<HomePage />} />
+      <Route path="/browse"             element={<ProductListingPage />} />
+      <Route path="/products/:id"       element={<ProductDetailPage />} />
+      <Route path="/store/:sellerId"    element={<StorefrontPage />} />
+      <Route path="/cart"               element={<CartPage />} />
+      <Route path="/checkout"           element={<CheckoutPage />} />
       <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
-      <Route path="/track-order"       element={<GuestOrderTrackingPage />} />
+      <Route path="/track-order"        element={<GuestOrderTrackingPage />} />
 
-      {/* ── Auth pages (sellers only) ───────────────────────────── */}
+      {/* ── Seller auth ─────────────────────────────────────────── */}
       <Route path="/login"    element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
-      {/* ── Static info pages ──────────────────────────────────── */}
+      {/* ── Admin auth ──────────────────────────────────────────── */}
+      <Route path="/admin/login"    element={<AdminLoginPage />} />
+      <Route path="/admin/register" element={<AdminRegisterPage />} />
+
+      {/* ── Static ──────────────────────────────────────────────── */}
       <Route path="/faq"     element={<FAQPage />} />
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/terms"   element={<TermsPage />} />
 
-      {/* ── Authenticated user routes ───────────────────────────── */}
-      <Route path="/dashboard"
-        element={<ProtectedRoute><BuyerDashboardPage /></ProtectedRoute>}
-      />
-      <Route path="/profile"
-        element={<ProtectedRoute><ProfilePage /></ProtectedRoute>}
-      />
-      <Route path="/orders"
-        element={<ProtectedRoute><BuyerOrdersPage /></ProtectedRoute>}
-      />
-      <Route path="/orders/:id"
-        element={<ProtectedRoute><BuyerOrderDetailPage /></ProtectedRoute>}
-      />
-      <Route path="/messages"
-        element={<ProtectedRoute><MessagesPage /></ProtectedRoute>}
-      />
+      {/* ── Authenticated buyer ─────────────────────────────────── */}
+      <Route path="/dashboard" element={<ProtectedRoute><BuyerDashboardPage /></ProtectedRoute>} />
+      <Route path="/profile"   element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+      <Route path="/orders"    element={<ProtectedRoute><BuyerOrdersPage /></ProtectedRoute>} />
+      <Route path="/orders/:id" element={<ProtectedRoute><BuyerOrderDetailPage /></ProtectedRoute>} />
+      <Route path="/messages"  element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />
 
-      {/* ── Seller routes ───────────────────────────────────────── */}
+      {/* ── Seller ──────────────────────────────────────────────── */}
       <Route path="/seller/dashboard"
         element={<ProtectedRoute role="seller"><SellerDashboardPage /></ProtectedRoute>}
       />
@@ -111,9 +109,18 @@ export default function AppRouter() {
         element={<ProtectedRoute role="seller"><SellerOrderDetailPage /></ProtectedRoute>}
       />
 
-      {/* ── Admin routes ────────────────────────────────────────── */}
+      {/* ── Admin ───────────────────────────────────────────────── */}
       <Route path="/admin"
         element={<ProtectedRoute role="admin"><AdminDashboardPage /></ProtectedRoute>}
+      />
+      <Route path="/admin/users"
+        element={<ProtectedRoute role="admin"><AdminUsersPage /></ProtectedRoute>}
+      />
+      <Route path="/admin/listings"
+        element={<ProtectedRoute role="admin"><AdminListingsPage /></ProtectedRoute>}
+      />
+      <Route path="/admin/categories"
+        element={<ProtectedRoute role="admin"><AdminCategoriesPage /></ProtectedRoute>}
       />
 
       {/* ── Fallback ────────────────────────────────────────────── */}

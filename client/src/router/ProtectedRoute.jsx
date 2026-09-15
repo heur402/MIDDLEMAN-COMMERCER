@@ -17,9 +17,9 @@ export default function ProtectedRoute({ children, role }) {
   // Still loading auth state from token
   if (loading) return <PageSpinner />
 
-  // Not logged in — redirect to login (no redirect param; LoginForm handles role-based destination)
+  // Not logged in — redirect to appropriate login page
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
+    return <Navigate to={role === 'admin' ? '/admin/login' : '/login'} replace />
   }
 
   // Logged in but wrong role
