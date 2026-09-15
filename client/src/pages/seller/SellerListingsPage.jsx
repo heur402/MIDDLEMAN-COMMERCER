@@ -105,13 +105,15 @@ export default function SellerListingsPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex items-center justify-end gap-1">
-                              <Link
-                                to={`/products/${listing._id}`}
+                              <a
+                                href={`/products/${listing._id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="p-1.5 rounded text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors"
-                                title="View"
+                                title="View on store"
                               >
                                 <Eye size={15} />
-                              </Link>
+                              </a>
                               <Link
                                 to={`/seller/listings/${listing._id}/edit`}
                                 className="p-1.5 rounded text-gray-400 hover:text-orange-500 hover:bg-orange-50 transition-colors"
