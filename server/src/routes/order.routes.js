@@ -19,7 +19,7 @@ router.post('/',      optionalAuth, validate(placeOrderSchema), placeOrders)
 router.get('/track',  validate(trackOrderSchema, 'query'), trackGuestOrder)
 
 // Mark delivered — guest uses ?email= param, auth user uses token
-router.patch('/:id/deliver', markDelivered)
+router.patch('/:id/deliver', optionalAuth, markDelivered)
 
 // Authenticated buyer history
 router.get('/',    verifyToken, validate(orderQuerySchema, 'query'), getBuyerOrders)
