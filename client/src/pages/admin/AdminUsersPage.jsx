@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  Users, Package, AlertTriangle, TrendingUp, Tag, ShieldAlert, Check, X, Edit2, Trash2, ShieldCheck, Mail, Phone, Search
+  Users, Package, AlertTriangle, TrendingUp, Tag, ShieldAlert, Edit2, Trash2, ShieldCheck, Search, Bell
 } from 'lucide-react'
 import PageWrapper from '../../components/layout/PageWrapper'
 import { PageSpinner } from '../../components/common/Spinner'
@@ -35,7 +35,11 @@ export default function AdminUsersPage() {
   const [formVerified, setFormVerified] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
-  // Search input local state
+  // Notify state
+  const [notifyUser, setNotifyUser] = useState(null)
+  const [notifyTitle, setNotifyTitle] = useState('')
+  const [notifyMessage, setNotifyMessage] = useState('')
+  const [notifying, setNotifying] = useState(false)
   const [searchVal, setSearchVal] = useState('')
 
   useEffect(() => {
@@ -52,6 +56,21 @@ export default function AdminUsersPage() {
       toast.error('Failed to load users')
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function handleNotifySend(e) {
+    e.preventDefault()
+    if (!notifyTitle.trim()) { toast.error('Title is required'); return }
+    setNotifying(true)
+    try {
+      await adminApi.notifyUser(notifyUser._id, { title: notifyTitle.trim(), message: notifyMessage.trim() })
+      toast.success('Notification sent')
+      setNotifyUser(null)
+    } catch {
+      toast.error('Failed to send notification')
+    } finally {
+      setNotifying(false)
     }
   }
 
@@ -316,6 +335,13 @@ export default function AdminUsersPage() {
                                     title="Edit Profile"
                                   >
                                     <Edit2 size={15} />
+                                  </button>
+                  <button
+                                    onClick={() => { setNotifyUser(u); setNotifyTitle(''); setNotifyMessage('') }}
+                                    className="p-1.5 hover:bg-gray-100 rounded text-gray-600 hover:text-blue-500 transition-colors"
+                                    title="Send Notification"
+                                  >
+                                    <Bell size={15} />
                                   </button>
                                   <button
                                     onClick={() => handleToggleBan(u)}

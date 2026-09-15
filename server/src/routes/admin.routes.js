@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import {
-  listUsers, getUser, banUser, updateUser, deleteUser,
+  listUsers, getUser, banUser, updateUser, deleteUser, notifyUser,
   listAllListings, deactivateListing,
   listAllDisputes, updateDispute,
   getAnalytics,
@@ -22,7 +22,8 @@ router.get('/users',             listUsers)
 router.get('/users/:id',         getUser)
 router.patch('/users/:id',       validate(adminUpdateUserSchema), updateUser)
 router.delete('/users/:id',      deleteUser)
-router.patch('/users/:id/ban',   banUser)
+router.patch('/users/:id/ban',    banUser)
+router.post('/users/:id/notify',  notifyUser)
 
 // Listings
 router.get('/listings',                    listAllListings)

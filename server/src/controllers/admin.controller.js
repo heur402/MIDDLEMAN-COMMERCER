@@ -2,6 +2,7 @@ import { User } from '../models/User.js'
 import { Product } from '../models/Product.js'
 import { Order } from '../models/Order.js'
 import { Dispute } from '../models/Dispute.js'
+import { Notification } from '../models/Notification.js'
 import { ApiError } from '../utils/ApiError.js'
 import { asyncHandler } from '../utils/asyncHandler.js'
 import { paginate } from '../utils/paginate.js'
@@ -146,6 +147,25 @@ export const updateDispute = asyncHandler(async (req, res) => {
 
   await dispute.save()
   res.json({ success: true, data: dispute })
+})
+
+// ── POST /api/admin/users/:id/notify ─────────────────────────────────────────
+export const notifyUser = asyncHandler(async (req, res) => {
+  const { title, message } = req.body
+  if (!title?.trim()) throw ApiError.badRequest('Title is required')
+
+  const user = await User.findById(req.params.id)
+  if (!user) throw ApiError.notFound('User not found')
+
+  await Notification.create({
+    userId:  user._id,
+    type:    'admin:notice',
+    title:   title.trim(),
+    message: message?.trim() ?? '',
+  })
+
+  console.log(`[ADMIN] Notification sent to user:${user._id} — ${title}`)
+  res.json({ success: true, message: 'Notification sent' })
 })
 
 // ── GET /api/admin/analytics ──────────────────────────────────────────────────

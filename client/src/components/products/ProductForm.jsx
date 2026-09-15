@@ -1,13 +1,8 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Upload, X, Plus } from 'lucide-react'
 import Button from '../common/Button'
 import Input from '../common/Input'
-import { cn } from '../../utils/cn'
-
-const CATEGORIES = [
-  'electronics', 'clothing', 'home', 'beauty', 'sports',
-  'toys', 'books', 'automotive', 'other',
-]
+import { categoriesApi } from '../../api/categories.api'
 
 const CONDITIONS = [
   { value: 'new',      label: 'New'      },
@@ -23,6 +18,12 @@ const CONDITIONS = [
  * Optional: description, category, condition, tags, images, status.
  */
 export default function ProductForm({ initialValues = {}, onSubmit, loading }) {
+  const [categories, setCategories] = useState([])
+
+  useEffect(() => {
+    categoriesApi.list().then(({ data }) => setCategories(data.data ?? [])).catch(() => {})
+  }, [])
+
   const [form, setForm] = useState({
     title:       initialValues.title       ?? '',
     description: initialValues.description ?? '',
@@ -149,9 +150,10 @@ export default function ProductForm({ initialValues = {}, onSubmit, loading }) {
               onChange={(e) => set('category', e.target.value)}
               className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400"
             >
-              {CATEGORIES.map((c) => (
-                <option key={c} value={c}>
-                  {c.charAt(0).toUpperCase() + c.slice(1)}
+              <option value="">Select a category</option>
+              {categories.map((c) => (
+                <option key={c._id} value={c.slug}>
+                  {c.icon ? `${c.icon} ` : ''}{c.name}
                 </option>
               ))}
             </select>

@@ -22,3 +22,4 @@ rad.json
 #Test results file
 TestResults.xml
 server/node_modules/
+client/.env
