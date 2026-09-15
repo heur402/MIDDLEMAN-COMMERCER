@@ -33,12 +33,11 @@ export function sendNotification(userId, type, payload = {}) {
  * Notify both buyer and seller of an order status change.
  */
 export function notifyOrderStatus(order, newStatus) {
-  sendNotification(order.buyerId.toString(), NotificationType[`ORDER_${newStatus.toUpperCase()}`], {
-    orderId: order._id,
-    status: newStatus,
-  })
-  sendNotification(order.sellerId.toString(), NotificationType[`ORDER_${newStatus.toUpperCase()}`], {
-    orderId: order._id,
-    status: newStatus,
-  })
+  const type = NotificationType[`ORDER_${newStatus.toUpperCase()}`]
+  if (order.buyerId) {
+    sendNotification(order.buyerId.toString(), type, { orderId: order._id, status: newStatus })
+  }
+  if (order.sellerId) {
+    sendNotification(order.sellerId.toString(), type, { orderId: order._id, status: newStatus })
+  }
 }

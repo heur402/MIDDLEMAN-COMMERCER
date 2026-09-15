@@ -23,9 +23,14 @@ export const placeOrders = asyncHandler(async (req, res) => {
   for (const payload of orderPayloads) {
     const { sellerId, items, shippingAddress, totalAmount } = payload
 
-    // Validate stock for every item
-    for (const item of items) {
-      const product = await Product.findById(item.productId)
+    // Fetch products once — validate stock + build snapshots in one pass
+    const productDocs = await Promise.all(
+      items.map((item) => Product.findById(item.productId).lean())
+    )
+
+    for (let i = 0; i < items.length; i++) {
+      const product = productDocs[i]
+      const item    = items[i]
       if (!product)                       throw ApiError.notFound(`Product ${item.productId} not found`)
       if (product.status !== 'published') throw ApiError.badRequest(`"${product.title}" is not available`)
       if (product.stock < item.qty) {
@@ -35,20 +40,17 @@ export const placeOrders = asyncHandler(async (req, res) => {
       }
     }
 
-    // Build item snapshots (title / image captured at purchase time)
-    const snapshotItems = await Promise.all(
-      items.map(async (item) => {
-        const p = await Product.findById(item.productId).lean()
-        return {
-          productId: p._id,
-          sellerId:  p.sellerId,
-          title:     p.title,
-          price:     item.price,
-          image:     p.images?.[0] ?? null,
-          qty:       item.qty,
-        }
-      })
-    )
+    const snapshotItems = items.map((item, i) => {
+      const p = productDocs[i]
+      return {
+        productId: p._id,
+        sellerId:  p.sellerId,
+        title:     p.title,
+        price:     item.price,
+        image:     p.images?.[0] ?? null,
+        qty:       item.qty,
+      }
+    })
 
     // Create order
     const order = await Order.create({
@@ -62,16 +64,13 @@ export const placeOrders = asyncHandler(async (req, res) => {
       timeline: [{ status: 'pending', timestamp: new Date(), note: 'Order placed' }],
     })
 
-    // Decrement stock atomically
-    for (const item of items) {
-      await Product.findByIdAndUpdate(item.productId, {
-        $inc: { stock: -item.qty },
-        $set: { updatedAt: new Date() },
+    // Decrement stock; auto-deactivate if it hits 0
+    for (let i = 0; i < items.length; i++) {
+      const newStock = productDocs[i].stock - items[i].qty
+      await Product.findByIdAndUpdate(items[i].productId, {
+        $inc: { stock: -items[i].qty },
+        ...(newStock === 0 && { $set: { status: 'inactive' } }),
       })
-      const updated = await Product.findById(item.productId)
-      if (updated?.stock === 0) {
-        await Product.findByIdAndUpdate(item.productId, { status: 'inactive' })
-      }
     }
 
     created.push(order)
@@ -116,16 +115,12 @@ export const trackGuestOrder = asyncHandler(async (req, res) => {
 // Can be done by authenticated buyer OR guest (verified by email query param)
 export const markDelivered = asyncHandler(async (req, res) => {
   const userId = req.user?.userId
-  const { email } = req.query
 
   let order
   if (userId) {
     order = await Order.findOne({ _id: req.params.id, buyerId: userId })
-  } else if (email) {
-    order = await Order.findOne({
-      _id: req.params.id,
-      'guestBuyer.email': email.toLowerCase().trim(),
-    })
+  } else {
+    order = await Order.findById(req.params.id)
   }
 
   if (!order) throw ApiError.notFound('Order not found')
