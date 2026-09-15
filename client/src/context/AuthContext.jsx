@@ -67,14 +67,14 @@ export function AuthProvider({ children }) {
   const login = useCallback(async (credentials) => {
     const { data } = await authApi.login(credentials)
     localStorage.setItem('accessToken', data.accessToken)
-    dispatch({ type: 'LOGIN_SUCCESS', payload: data })
+    dispatch({ type: 'LOGIN_SUCCESS', payload: { user: data.data, accessToken: data.accessToken } })
     return data
   }, [])
 
   const register = useCallback(async (payload) => {
     const { data } = await authApi.register(payload)
     localStorage.setItem('accessToken', data.accessToken)
-    dispatch({ type: 'LOGIN_SUCCESS', payload: data })
+    dispatch({ type: 'LOGIN_SUCCESS', payload: { user: data.data, accessToken: data.accessToken } })
     return data
   }, [])
 
