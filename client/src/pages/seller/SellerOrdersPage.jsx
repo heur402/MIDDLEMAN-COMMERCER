@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Package, ChevronRight, Truck } from 'lucide-react'
-import PageWrapper from '../../components/layout/PageWrapper'
-import Sidebar from '../../components/layout/Sidebar'
+import SellerLayout from '../../components/layout/SellerLayout'
 import OrderStatusBadge from '../../components/orders/OrderStatusBadge'
 import Pagination from '../../components/common/Pagination'
 import EmptyState from '../../components/common/EmptyState'
@@ -16,13 +15,7 @@ import { formatDate } from '../../utils/formatDate'
 import { TrendingUp, ShoppingBag } from 'lucide-react'
 import toast from 'react-hot-toast'
 
-const SELLER_NAV = [
-  { to: '/seller/dashboard', icon: TrendingUp, label: 'Overview' },
-  { to: '/seller/listings', icon: Package, label: 'My Listings' },
-  { to: '/seller/orders', icon: ShoppingBag, label: 'Orders' },
-]
-
-const STATUS_ACTIONS = {
+export default function SellerOrdersPage() = {
   pending:   { action: 'confirmed', label: 'Confirm Order' },
   confirmed: { action: 'shipped',   label: 'Mark as Shipped', needsTracking: true },
 }
@@ -76,12 +69,9 @@ export default function SellerOrdersPage() {
   }
 
   return (
-    <PageWrapper>
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex gap-6">
-          <Sidebar items={SELLER_NAV} title="Seller" className="hidden md:block" />
-
-          <div className="flex-1 min-w-0">
+    <SellerLayout>
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="flex-1 min-w-0">
             <h1 className="text-xl font-bold text-gray-900 mb-6">Orders to Fulfill</h1>
 
             {loading ? (
@@ -151,11 +141,10 @@ export default function SellerOrdersPage() {
                 />
               </>
             )}
-          </div>
         </div>
       </div>
 
-      {/* Tracking number modal */}
+      {/* Tracking number modal */}}
       <Modal
         isOpen={!!actionOrder}
         onClose={() => setActionOrder(null)}
@@ -190,6 +179,6 @@ export default function SellerOrdersPage() {
           </Button>
         </div>
       </Modal>
-    </PageWrapper>
+    </SellerLayout>
   )
 }
