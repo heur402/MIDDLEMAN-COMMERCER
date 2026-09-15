@@ -42,20 +42,20 @@ import SellerOrderDetailPage   from '../pages/seller/SellerOrderDetailPage'
 import AdminDashboardPage  from '../pages/admin/AdminDashboardPage'
 
 export default function AppRouter() {
-  const { isAuthenticated, isSeller, isAdmin } = useAuth()
+  const { isSeller, isAdmin } = useAuth()
 
-  // Sellers and admins should never land on the buyer home
-  function RootRedirect() {
+  // Unknown route: send sellers/admins to their dashboard, everyone else to 404
+  function FallbackRoute() {
     if (isAdmin)  return <Navigate to="/admin" replace />
     if (isSeller) return <Navigate to="/seller/dashboard" replace />
-    return <HomePage />
+    return <NotFoundPage />
   }
 
   return (
     <Routes>
 
       {/* ── Public — no login ever required for buyers ──────────── */}
-      <Route path="/" element={<RootRedirect />} />
+      <Route path="/"                  element={<HomePage />} />
       <Route path="/browse"            element={<ProductListingPage />} />
       <Route path="/products/:id"      element={<ProductDetailPage />} />
       <Route path="/store/:sellerId"   element={<StorefrontPage />} />
@@ -117,7 +117,7 @@ export default function AppRouter() {
       />
 
       {/* ── Fallback ────────────────────────────────────────────── */}
-      <Route path="*" element={<NotFoundPage />} />
+      <Route path="*" element={<FallbackRoute />} />
 
     </Routes>
   )

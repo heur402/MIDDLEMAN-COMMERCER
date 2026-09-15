@@ -1,4 +1,4 @@
-import { Navigate, useLocation } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { PageSpinner } from '../components/common/Spinner'
 
@@ -13,19 +13,13 @@ import { PageSpinner } from '../components/common/Spinner'
  */
 export default function ProtectedRoute({ children, role }) {
   const { isAuthenticated, loading, hasRole } = useAuth()
-  const location = useLocation()
 
   // Still loading auth state from token
   if (loading) return <PageSpinner />
 
-  // Not logged in — redirect to login
+  // Not logged in — redirect to login (no redirect param; LoginForm handles role-based destination)
   if (!isAuthenticated) {
-    return (
-      <Navigate
-        to={`/login?redirect=${encodeURIComponent(location.pathname)}`}
-        replace
-      />
-    )
+    return <Navigate to="/login" replace />
   }
 
   // Logged in but wrong role

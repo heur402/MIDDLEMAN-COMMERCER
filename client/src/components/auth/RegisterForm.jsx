@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import Input from '../common/Input'
@@ -9,8 +9,6 @@ import toast from 'react-hot-toast'
 export default function RegisterForm() {
   const { register } = useAuth()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const redirect = searchParams.get('redirect') // explicit redirect from ProtectedRoute
 
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' })
   const [showPassword, setShowPassword] = useState(false)
@@ -45,12 +43,7 @@ export default function RegisterForm() {
         asSeller: true,
       })
       toast.success('Seller account created! 🎉')
-
-      if (redirect) {
-        navigate(redirect)
-      } else {
-        navigate('/seller/dashboard')
-      }
+      navigate('/seller/dashboard')
     } catch (err) {
       const msg = err.response?.data?.message ?? 'Registration failed. Try again.'
       if (msg.toLowerCase().includes('email')) {
