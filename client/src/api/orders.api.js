@@ -6,8 +6,8 @@ export const ordersApi = {
   place: (data) => api.post('/orders', data),
 
   // Track a guest order by orderId + email (no auth)
-  trackGuest: (orderId, email) =>
-    api.get('/orders/track', { params: { orderId, email } }),
+  trackGuest: (orderId) =>
+    api.get('/orders/track', { params: { orderId } }),
 
   // Mark delivered — guest passes email as query param
   markDelivered: (id, email) =>

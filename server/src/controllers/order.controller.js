@@ -101,16 +101,13 @@ export const getBuyerOrder = asyncHandler(async (req, res) => {
   res.json({ success: true, data: order })
 })
 
-// ── GET /api/orders/track — guest order lookup by orderId + email ─────────────
+// ── GET /api/orders/track — lookup by orderId only ──────────────────────────
 export const trackGuestOrder = asyncHandler(async (req, res) => {
-  const { orderId, email } = req.query
-  if (!orderId || !email) throw ApiError.badRequest('orderId and email are required')
+  const { orderId } = req.query
+  if (!orderId) throw ApiError.badRequest('orderId is required')
 
-  const order = await Order.findOne({
-    _id: orderId,
-    'guestBuyer.email': email.toLowerCase().trim(),
-  })
-  if (!order) throw ApiError.notFound('Order not found. Check your order ID and email address.')
+  const order = await Order.findById(orderId).catch(() => null)
+  if (!order) throw ApiError.notFound('Order not found. Check your Order ID.')
 
   res.json({ success: true, data: order })
 })

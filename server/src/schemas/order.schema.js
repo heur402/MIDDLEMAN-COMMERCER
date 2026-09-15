@@ -58,9 +58,8 @@ export const orderQuerySchema = z.object({
 
 /**
  * GET /api/orders/track
- * Guest can look up their orders by email + orderId.
+ * Look up an order by orderId only.
  */
 export const trackOrderSchema = z.object({
   orderId: z.string().min(1, 'orderId is required'),
-  email:   z.string().email('Valid email is required'),
 })
