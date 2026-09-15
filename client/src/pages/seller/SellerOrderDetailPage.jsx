@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { ChevronLeft, Truck } from 'lucide-react'
-import PageWrapper from '../../components/layout/PageWrapper'
+import SellerLayout from '../../components/layout/SellerLayout'
 import OrderTimeline from '../../components/orders/OrderTimeline'
 import OrderStatusBadge from '../../components/orders/OrderStatusBadge'
 import Button from '../../components/common/Button'
@@ -13,16 +13,16 @@ import { formatDate } from '../../utils/formatDate'
 import toast from 'react-hot-toast'
 
 const NEXT = {
-  pending:   { status: 'confirmed', label: 'Confirm Order',    needsTracking: false },
-  confirmed: { status: 'shipped',   label: 'Mark as Shipped',  needsTracking: true  },
+  pending:   { status: 'confirmed', label: 'Confirm Order',   needsTracking: false },
+  confirmed: { status: 'shipped',   label: 'Mark as Shipped', needsTracking: true  },
 }
 
 export default function SellerOrderDetailPage() {
   const { id } = useParams()
-  const [order, setOrder]         = useState(null)
-  const [loading, setLoading]     = useState(true)
-  const [updating, setUpdating]   = useState(false)
-  const [tracking, setTracking]   = useState('')
+  const [order, setOrder]       = useState(null)
+  const [loading, setLoading]   = useState(true)
+  const [updating, setUpdating] = useState(false)
+  const [tracking, setTracking] = useState('')
 
   useEffect(() => {
     ordersApi.getSellerOrderById(id)
@@ -49,22 +49,22 @@ export default function SellerOrderDetailPage() {
     } catch (err) {
       toast.error(err?.response?.data?.message ?? 'Failed to update order')
     } finally {
-      setUpdating(false) }
+      setUpdating(false)
+    }
   }
 
-  if (loading) return <PageWrapper><PageSpinner /></PageWrapper>
-  if (!order)  return <PageWrapper><div className="text-center py-20 text-gray-500">Order not found.</div></PageWrapper>
+  if (loading) return <SellerLayout><PageSpinner /></SellerLayout>
+  if (!order)  return <SellerLayout><div className="text-center py-20 text-gray-500">Order not found.</div></SellerLayout>
 
   const next = NEXT[order.status]
 
   return (
-    <PageWrapper>
+    <SellerLayout>
       <div className="max-w-2xl mx-auto px-4 py-6">
         <Link to="/seller/orders" className="flex items-center gap-1 text-sm text-gray-500 hover:text-orange-500 mb-4">
           <ChevronLeft size={16} /> Back to Orders
         </Link>
 
-        {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div>
             <h1 className="text-lg font-bold text-gray-900">Order #{order._id.slice(-8).toUpperCase()}</h1>
@@ -73,13 +73,11 @@ export default function SellerOrderDetailPage() {
           <OrderStatusBadge status={order.status} />
         </div>
 
-        {/* Timeline */}
         <div className="bg-white rounded-xl shadow-sm p-5 mb-4">
           <h2 className="text-sm font-semibold text-gray-700 mb-4">Order Timeline</h2>
           <OrderTimeline status={order.status} timeline={order.timeline} />
         </div>
 
-        {/* Items */}
         <div className="bg-white rounded-xl shadow-sm p-5 mb-4">
           <h2 className="text-sm font-semibold text-gray-700 mb-3">Items</h2>
           {order.items.map((item, i) => (
@@ -100,7 +98,6 @@ export default function SellerOrderDetailPage() {
           </div>
         </div>
 
-        {/* Shipping */}
         <div className="bg-white rounded-xl shadow-sm p-5 mb-4">
           <h2 className="text-sm font-semibold text-gray-700 mb-2">Ship To</h2>
           <p className="text-sm text-gray-700">
@@ -108,7 +105,6 @@ export default function SellerOrderDetailPage() {
           </p>
         </div>
 
-        {/* Action */}
         {next && (
           <div className="bg-white rounded-xl shadow-sm p-5 space-y-3">
             {next.needsTracking && (
@@ -126,6 +122,6 @@ export default function SellerOrderDetailPage() {
           </div>
         )}
       </div>
-    </PageWrapper>
+    </SellerLayout>
   )
 }

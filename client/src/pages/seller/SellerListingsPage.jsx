@@ -9,7 +9,6 @@ import Badge from '../../components/common/Badge'
 import Button from '../../components/common/Button'
 import { productsApi } from '../../api/products.api'
 import { formatCurrency } from '../../utils/formatCurrency'
-import { TrendingUp, ShoppingBag } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 export default function SellerListingsPage() {
@@ -46,8 +45,7 @@ export default function SellerListingsPage() {
   return (
     <SellerLayout>
       <div className="max-w-4xl mx-auto px-4 py-6">
-        <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6">
               <h1 className="text-xl font-bold text-gray-900">My Listings</h1>
               <Button as={Link} to="/seller/listings/new" size="sm">
                 <Plus size={15} /> New Listing
@@ -143,8 +141,7 @@ export default function SellerListingsPage() {
                 />
               </>
             )}
-          </div>
-      </div>
+        </div>
     </SellerLayout>
   )
 }

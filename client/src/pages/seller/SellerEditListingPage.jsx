@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import PageWrapper from '../../components/layout/PageWrapper'
+import SellerLayout from '../../components/layout/SellerLayout'
 import ProductForm from '../../components/products/ProductForm'
 import { PageSpinner } from '../../components/common/Spinner'
 import { productsApi } from '../../api/products.api'
@@ -25,14 +25,14 @@ export default function SellerEditListingPage() {
     setSaving(true)
     try {
       await productsApi.update(id, {
-        title: formData.title,
+        title:       formData.title,
         description: formData.description,
-        price: formData.price,
-        category: formData.category,
-        condition: formData.condition,
-        stock: formData.stock,
-        status: formData.status,
-        tags: formData.tags,
+        price:       formData.price,
+        category:    formData.category,
+        condition:   formData.condition,
+        stock:       formData.stock,
+        status:      formData.status,
+        tags:        formData.tags,
       })
 
       if (formData.newImageFiles?.length > 0) {
@@ -50,20 +50,20 @@ export default function SellerEditListingPage() {
     }
   }
 
-  if (loading) return <PageWrapper><PageSpinner /></PageWrapper>
+  if (loading) return <SellerLayout><PageSpinner /></SellerLayout>
 
   if (!product) return (
-    <PageWrapper>
+    <SellerLayout>
       <div className="text-center py-20 text-gray-500">Listing not found.</div>
-    </PageWrapper>
+    </SellerLayout>
   )
 
   return (
-    <PageWrapper>
+    <SellerLayout>
       <div className="max-w-2xl mx-auto px-4 py-6">
         <h1 className="text-xl font-bold text-gray-900 mb-6">Edit Listing</h1>
         <ProductForm initialValues={product} onSubmit={handleSubmit} loading={saving} />
       </div>
-    </PageWrapper>
+    </SellerLayout>
   )
 }
