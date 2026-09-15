@@ -112,10 +112,10 @@ export default function Navbar() {
                     <Package size={13} /> Track Order
                   </Link>
                   <Link to="/login" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-orange-500 transition-colors rounded-full">
-                    Seller Login
+                    Login
                   </Link>
                   <Link to="/register" className="px-4 py-2 text-sm font-medium bg-orange-500 hover:bg-orange-600 text-white rounded-full transition-colors shadow-sm">
-                    Sell on MiddleMan
+                    Sign Up
                   </Link>
                 </div>
               )}
@@ -207,10 +207,10 @@ export default function Navbar() {
                     Track My Order
                   </Link>
                   <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium rounded-xl text-gray-700 hover:bg-gray-50">
-                    Seller Login
+                    Login
                   </Link>
                   <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 text-sm font-semibold rounded-xl bg-orange-500 text-white text-center">
-                    Sell on MiddleMan
+                    Sign Up
                   </Link>
                 </>
               )}
