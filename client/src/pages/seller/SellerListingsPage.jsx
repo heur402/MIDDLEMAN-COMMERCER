@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Edit3, Trash2, Eye, Package } from 'lucide-react'
-import PageWrapper from '../../components/layout/PageWrapper'
-import Sidebar from '../../components/layout/Sidebar'
+import SellerLayout from '../../components/layout/SellerLayout'
 import Pagination from '../../components/common/Pagination'
 import EmptyState from '../../components/common/EmptyState'
 import { PageSpinner } from '../../components/common/Spinner'
@@ -12,12 +11,6 @@ import { productsApi } from '../../api/products.api'
 import { formatCurrency } from '../../utils/formatCurrency'
 import { TrendingUp, ShoppingBag } from 'lucide-react'
 import toast from 'react-hot-toast'
-
-const SELLER_NAV = [
-  { to: '/seller/dashboard', icon: TrendingUp, label: 'Overview' },
-  { to: '/seller/listings', icon: Package, label: 'My Listings' },
-  { to: '/seller/orders', icon: ShoppingBag, label: 'Orders' },
-]
 
 export default function SellerListingsPage() {
   const [listings, setListings] = useState([])
@@ -51,12 +44,9 @@ export default function SellerListingsPage() {
   }
 
   return (
-    <PageWrapper>
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex gap-6">
-          <Sidebar items={SELLER_NAV} title="Seller" className="hidden md:block" />
-
-          <div className="flex-1 min-w-0">
+    <SellerLayout>
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-6">
               <h1 className="text-xl font-bold text-gray-900">My Listings</h1>
               <Button as={Link} to="/seller/listings/new" size="sm">
@@ -154,8 +144,7 @@ export default function SellerListingsPage() {
               </>
             )}
           </div>
-        </div>
       </div>
-    </PageWrapper>
+    </SellerLayout>
   )
 }

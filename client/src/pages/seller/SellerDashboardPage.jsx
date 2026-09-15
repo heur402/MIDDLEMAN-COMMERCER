@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom'
 import {
   Package, DollarSign, ShoppingBag, Plus, TrendingUp, ChevronRight,
 } from 'lucide-react'
-import PageWrapper from '../../components/layout/PageWrapper'
-import Sidebar from '../../components/layout/Sidebar'
+import SellerLayout from '../../components/layout/SellerLayout'
 import OrderCard from '../../components/orders/OrderCard'
 import { PageSpinner } from '../../components/common/Spinner'
 import { ordersApi } from '../../api/orders.api'
@@ -12,12 +11,6 @@ import { productsApi } from '../../api/products.api'
 import { formatCurrency } from '../../utils/formatCurrency'
 import { useAuth } from '../../context/AuthContext'
 import Button from '../../components/common/Button'
-
-const SELLER_NAV = [
-  { to: '/seller/dashboard', icon: TrendingUp, label: 'Overview' },
-  { to: '/seller/listings', icon: Package, label: 'My Listings' },
-  { to: '/seller/orders', icon: ShoppingBag, label: 'Orders' },
-]
 
 export default function SellerDashboardPage() {
   const { user } = useAuth()
@@ -42,14 +35,8 @@ export default function SellerDashboardPage() {
   }, [])
 
   return (
-    <PageWrapper>
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex gap-6">
-          {/* Sidebar */}
-          <Sidebar items={SELLER_NAV} title="Seller" className="hidden md:block" />
-
-          {/* Main */}
-          <div className="flex-1 min-w-0">
+    <SellerLayout>
+      <div className="max-w-4xl mx-auto px-4 py-6">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <div>
@@ -117,10 +104,8 @@ export default function SellerDashboardPage() {
                 </div>
               </>
             )}
-          </div>
-        </div>
       </div>
-    </PageWrapper>
+    </SellerLayout>
   )
 }
 
