@@ -1,20 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ChevronDown, ChevronUp, Filter } from 'lucide-react'
 import Button from '../common/Button'
 import { cn } from '../../utils/cn'
-
-const CATEGORIES = [
-  { value: '', label: 'All Categories' },
-  { value: 'electronics', label: 'Electronics' },
-  { value: 'clothing', label: 'Clothing & Fashion' },
-  { value: 'home', label: 'Home & Garden' },
-  { value: 'beauty', label: 'Beauty & Health' },
-  { value: 'sports', label: 'Sports & Outdoors' },
-  { value: 'toys', label: 'Toys & Baby' },
-  { value: 'books', label: 'Books & Media' },
-  { value: 'automotive', label: 'Automotive' },
-  { value: 'other', label: 'Other' },
-]
+import { categoriesApi } from '../../api/categories.api'
 
 const CONDITIONS = [
   { value: '', label: 'Any Condition' },
@@ -39,8 +27,13 @@ const SORT_OPTIONS = [
  * @param {function} onChange   Called with updated filter object
  */
 export default function ProductFilters({ filters = {}, onChange, className }) {
+  const [categories, setCategories] = useState([])
   const [priceMin, setPriceMin] = useState(filters.minPrice ?? '')
   const [priceMax, setPriceMax] = useState(filters.maxPrice ?? '')
+
+  useEffect(() => {
+    categoriesApi.list().then(({ data }) => setCategories(data.data ?? [])).catch(() => {})
+  }, [])
   const [openSections, setOpenSections] = useState({
     category: true,
     condition: true,
@@ -111,17 +104,26 @@ export default function ProductFilters({ filters = {}, onChange, className }) {
       {/* Category */}
       <Section title="Category" open={openSections.category} onToggle={() => toggle('category')}>
         <div className="space-y-1">
-          {CATEGORIES.map((cat) => (
-            <label key={cat.value} className="flex items-center gap-2 cursor-pointer group">
+          <label className="flex items-center gap-2 cursor-pointer group">
+            <input
+              type="radio" name="category" value=""
+              checked={!filters.category}
+              onChange={() => handleChange('category', undefined)}
+              className="accent-orange-500"
+            />
+            <span className="text-sm text-gray-700 group-hover:text-orange-600">All Categories</span>
+          </label>
+          {categories.map((cat) => (
+            <label key={cat._id} className="flex items-center gap-2 cursor-pointer group">
               <input
-                type="radio"
-                name="category"
-                value={cat.value}
-                checked={(filters.category ?? '') === cat.value}
-                onChange={() => handleChange('category', cat.value || undefined)}
+                type="radio" name="category" value={cat._id}
+                checked={(filters.category ?? '') === cat._id}
+                onChange={() => handleChange('category', cat._id)}
                 className="accent-orange-500"
               />
-              <span className="text-sm text-gray-700 group-hover:text-orange-600">{cat.label}</span>
+              <span className="text-sm text-gray-700 group-hover:text-orange-600">
+                {cat.icon ? `${cat.icon} ` : ''}{cat.name}
+              </span>
             </label>
           ))}
         </div>

@@ -7,6 +7,7 @@ import ProductFilters from '../components/products/ProductFilters'
 import Pagination from '../components/common/Pagination'
 import EmptyState from '../components/common/EmptyState'
 import { productsApi } from '../api/products.api'
+import { categoriesApi } from '../api/categories.api'
 
 export default function ProductListingPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -15,6 +16,11 @@ export default function ProductListingPage() {
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 })
   const [loading, setLoading] = useState(true)
   const [filtersOpen, setFiltersOpen] = useState(false)
+  const [categories, setCategories] = useState([])
+
+  useEffect(() => {
+    categoriesApi.list().then(({ data }) => setCategories(data.data ?? [])).catch(() => {})
+  }, [])
 
   // Derive filters from URL params
   const filters = {
@@ -70,7 +76,11 @@ export default function ProductListingPage() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-lg font-bold text-gray-900">
-              {filters.q ? `Search: "${filters.q}"` : filters.category ? `${filters.category.charAt(0).toUpperCase() + filters.category.slice(1)}` : 'All Products'}
+              {filters.q
+                ? `Search: "${filters.q}"`
+                : filters.category
+                  ? (categories.find((c) => c._id === filters.category)?.name ?? 'Products')
+                  : 'All Products'}
             </h1>
             {!loading && (
               <p className="text-sm text-gray-500">
