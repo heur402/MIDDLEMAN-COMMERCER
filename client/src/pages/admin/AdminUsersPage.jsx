@@ -383,6 +383,36 @@ export default function AdminUsersPage() {
           </div>
         </div>
       </div>
+
+      {/* Notify Modal */}
+      {notifyUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <form onSubmit={handleNotifySend} className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md space-y-4">
+            <h2 className="text-base font-bold text-gray-900">Notify: {notifyUser.name}</h2>
+            <Input
+              label="Title"
+              required
+              placeholder="e.g. Your account is under review"
+              value={notifyTitle}
+              onChange={(e) => setNotifyTitle(e.target.value)}
+            />
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Message <span className="text-gray-400 text-xs">(optional)</span></label>
+              <textarea
+                rows={3}
+                placeholder="Additional details..."
+                value={notifyMessage}
+                onChange={(e) => setNotifyMessage(e.target.value)}
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
+              />
+            </div>
+            <div className="flex justify-end gap-3 pt-1">
+              <Button type="button" variant="secondary" onClick={() => setNotifyUser(null)}>Cancel</Button>
+              <Button type="submit" loading={notifying}>Send Notification</Button>
+            </div>
+          </form>
+        </div>
+      )}
     </PageWrapper>
   )
 }
