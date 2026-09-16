@@ -2,13 +2,12 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import {
   ChevronRight, ArrowRight, Star, Shield, Truck,
-  Headphones, Gift, TrendingUp, Clock as ClockIcon, Award, Flame
+  Headphones, Gift, TrendingUp, Award, Flame
 } from 'lucide-react'
 import PageWrapper from '../components/layout/PageWrapper'
 import ProductGrid from '../components/products/ProductGrid'
 import { productsApi } from '../api/products.api'
 import { categoriesApi } from '../api/categories.api'
-import { countdown } from '../utils/formatDate'
 
 const CATEGORY_GRADIENTS = [
   'from-blue-400 to-blue-600',
@@ -21,8 +20,6 @@ const CATEGORY_GRADIENTS = [
   'from-slate-400 to-slate-600',
 ]
 
-const FLASH_END = new Date(Date.now() + 8 * 60 * 60 * 1000)
-
 // ─── Trust Badges ─────────────────────────────────────────────────────────────
 const TRUST_BADGES = [
   { icon: Shield, title: 'Buyer Protection', desc: 'Payment held until delivery confirmed', color: 'text-emerald-600' },
@@ -34,28 +31,17 @@ const TRUST_BADGES = [
 // ─── Main Component ──────────────────────────────────────────────────────────
 export default function HomePage() {
   const [categories, setCategories] = useState([])
-  const [newProducts, setNewProducts] = useState([])
-  const [flashProducts, setFlashProducts] = useState([])
-  const [featuredProducts, setFeaturedProducts] = useState([])
-  const [loadingNew, setLoadingNew] = useState(true)
-  const [loadingFlash, setLoadingFlash] = useState(true)
-  const [loadingFeatured, setLoadingFeatured] = useState(true)
-  const [timer, setTimer] = useState(countdown(FLASH_END))
+  const [allProducts, setAllProducts] = useState([])
+  const [loadingProducts, setLoadingProducts] = useState(true)
 
-  // Countdown tick
-  useEffect(() => {
-    const id = setInterval(() => setTimer(countdown(FLASH_END)), 1000)
-    return () => clearInterval(id)
-  }, [])
-
-  const fetchSection = useCallback(async (params, setter, setLoading) => {
+  const fetchProducts = useCallback(async () => {
     try {
-      const { data } = await productsApi.list(params)
-      setter(data.data ?? [])
+      const { data } = await productsApi.list({ limit: 20 })
+      setAllProducts(data.data ?? [])
     } catch {
-      setter([])
+      setAllProducts([])
     } finally {
-      setLoading(false)
+      setLoadingProducts(false)
     }
   }, [])
 
@@ -63,10 +49,8 @@ export default function HomePage() {
     categoriesApi.list()
       .then(({ data }) => setCategories(data.data ?? []))
       .catch(() => setCategories([]))
-    fetchSection({ sort: 'newest', limit: 10 }, setNewProducts, setLoadingNew)
-    fetchSection({ sort: 'price_asc', limit: 10 }, setFlashProducts, setLoadingFlash)
-    fetchSection({ sort: 'rating', limit: 10 }, setFeaturedProducts, setLoadingFeatured)
-  }, [fetchSection])
+    fetchProducts()
+  }, [fetchProducts])
 
   return (
     <PageWrapper className="bg-gradient-to-b from-gray-50 to-white">
@@ -76,34 +60,27 @@ export default function HomePage() {
       {/* ── Category Grid ── */}
       <CategoryGrid categories={categories} />
 
-      {/* ── Flash Sale ── */}
-      <FlashSaleSection 
-        products={flashProducts} 
-        loading={loadingFlash} 
-        timer={timer} 
-      />
-
-      {/* ── New Arrivals ── */}
-      <ProductSection
-        title="New Arrivals"
-        subtitle="Fresh products just for you"
-        icon={TrendingUp}
-        to="/browse?sort=newest"
-        products={newProducts}
-        loading={loadingNew}
-        gradient="from-blue-500 to-purple-600"
-      />
-
-      {/* ── Top Rated ── */}
-      <ProductSection
-        title="Top Rated"
-        subtitle="Loved by our community"
-        icon={Award}
-        to="/browse?sort=rating"
-        products={featuredProducts}
-        loading={loadingFeatured}
-        gradient="from-amber-500 to-orange-600"
-      />
+      {/* ── Unified Product Section (Free, no outer container) ── */}
+      <div className="max-w-7xl mx-auto px-4 mt-12">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
+              <Flame className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-black text-gray-900">All Products</h2>
+              <p className="text-sm text-gray-500">Discover our full collection</p>
+            </div>
+          </div>
+          <Link
+            to="/browse"
+            className="px-5 py-2 bg-orange-500 text-white font-semibold rounded-xl hover:bg-orange-600 transition-colors text-sm flex items-center gap-1 shadow-md"
+          >
+            View All <ChevronRight size={16} />
+          </Link>
+        </div>
+        <ProductGrid products={allProducts} loading={loadingProducts} />
+      </div>
 
       {/* ── Trust Badges ── */}
       <TrustBadges />
@@ -234,92 +211,6 @@ function CategoryGrid({ categories }) {
               </span>
             </Link>
           ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ─── Flash Sale Section ─────────────────────────────────────────────────────
-function FlashSaleSection({ products, loading, timer }) {
-  return (
-    <div className="max-w-7xl mx-auto px-4 mt-12">
-      <div className="bg-gradient-to-r from-red-500 to-orange-500 rounded-3xl shadow-2xl overflow-hidden">
-        {/* Header */}
-        <div className="px-6 py-5 bg-black/10 backdrop-blur-sm">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                <Flame className="w-6 h-6 text-yellow-300 fill-yellow-300" />
-              </div>
-              <div>
-                <h2 className="text-xl font-black text-white">Flash Sale</h2>
-                <p className="text-sm text-white/80">Up to 40% OFF - Limited time</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 bg-black/30 px-4 py-2 rounded-xl backdrop-blur-sm">
-                <ClockIcon className="w-5 h-5 text-white" />
-                <div className="flex items-center gap-1 text-white font-mono font-bold">
-                  <span className="bg-white/20 px-2 py-0.5 rounded text-lg min-w-[32px] text-center">
-                    {String(timer.hours).padStart(2, '0')}
-                  </span>
-                  <span>:</span>
-                  <span className="bg-white/20 px-2 py-0.5 rounded text-lg min-w-[32px] text-center">
-                    {String(timer.minutes).padStart(2, '0')}
-                  </span>
-                  <span>:</span>
-                  <span className="bg-white/20 px-2 py-0.5 rounded text-lg min-w-[32px] text-center">
-                    {String(timer.seconds).padStart(2, '0')}
-                  </span>
-                </div>
-              </div>
-              <Link
-                to="/browse?sort=price_asc"
-                className="px-5 py-2 bg-white text-orange-600 font-bold rounded-xl hover:bg-orange-50 transition-colors text-sm flex items-center gap-1"
-              >
-                View All <ChevronRight size={16} />
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Products */}
-        <div className="p-6">
-          <ProductGrid products={products} loading={loading} />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ─── Product Section ────────────────────────────────────────────────────────
-function ProductSection({ title, subtitle, icon: Icon, to, products, loading, gradient }) {
-  return (
-    <div className="max-w-7xl mx-auto px-4 mt-12">
-      <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-        <div className={`bg-gradient-to-r ${gradient} px-6 py-5`}>
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                {Icon && <Icon className="w-5 h-5 text-white" />}
-              </div>
-              <div>
-                <h2 className="text-xl font-black text-white">{title}</h2>
-                {subtitle && <p className="text-sm text-white/80">{subtitle}</p>}
-              </div>
-            </div>
-            <Link
-              to={to}
-              className="px-5 py-2 bg-white/20 backdrop-blur-sm text-white font-semibold rounded-xl hover:bg-white/30 transition-all text-sm flex items-center gap-1"
-            >
-              View All <ChevronRight size={16} />
-            </Link>
-          </div>
-        </div>
-        <div className="p-6">
-          <ProductGrid products={products} loading={loading} />
         </div>
       </div>
     </div>
