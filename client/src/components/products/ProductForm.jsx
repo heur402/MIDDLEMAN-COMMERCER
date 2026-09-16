@@ -79,12 +79,16 @@ export default function ProductForm({ initialValues = {}, onSubmit, loading }) {
   function handleSubmit(e) {
     e.preventDefault()
     if (!validate()) return
+    const existingImages = initialValues.images ?? []
+    // keptImages = existing URLs that were not removed by the seller
+    const keptImages = imagePreviews.filter((src) => existingImages.includes(src))
     onSubmit({
       ...form,
       price: Number(form.price),
       stock: Number(form.stock),
       tags:  form.tags.split(',').map((t) => t.trim()).filter(Boolean),
       newImageFiles,
+      keptImages,
     })
   }
 

@@ -25,7 +25,10 @@ export const createListing = asyncHandler(async (req, res) => {
 export const updateListing = asyncHandler(async (req, res) => {
   const product = await Product.findOne({ _id: req.params.id, sellerId: req.user.userId })
   if (!product) throw ApiError.notFound('Listing not found or not yours')
-  Object.assign(product, req.body)
+  const { images, ...rest } = req.body
+  Object.assign(product, rest)
+  // Replace images array if explicitly provided (handles removals)
+  if (Array.isArray(images)) product.images = images
   product.updatedAt = new Date()
   await product.save()
   res.json({ success: true, data: product })

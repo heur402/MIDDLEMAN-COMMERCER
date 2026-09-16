@@ -24,6 +24,7 @@ export default function SellerEditListingPage() {
   async function handleSubmit(formData) {
     setSaving(true)
     try {
+      // Send kept existing image URLs so server replaces product.images correctly
       await productsApi.update(id, {
         title:       formData.title,
         description: formData.description,
@@ -33,6 +34,7 @@ export default function SellerEditListingPage() {
         stock:       formData.stock,
         status:      formData.status,
         tags:        formData.tags,
+        images:      formData.keptImages ?? [],
       })
 
       if (formData.newImageFiles?.length > 0) {

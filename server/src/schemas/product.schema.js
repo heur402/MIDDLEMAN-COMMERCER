@@ -28,6 +28,7 @@ export const createProductSchema = z.object({
     .min(0, 'Stock cannot be negative'),
   status: z.enum(['published', 'draft']).default('published'),
   tags: z.array(z.string().trim().max(30)).max(10).default([]),
+  images: z.array(z.string()).max(5).optional(),
 })
 
 export const updateProductSchema = createProductSchema.partial()
