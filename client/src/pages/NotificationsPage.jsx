@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Bell } from 'lucide-react'
 import PageWrapper from '../components/layout/PageWrapper'
+import SellerLayout from '../components/layout/SellerLayout'
 import { authApi } from '../api/auth.api'
+import { useAuth } from '../context/AuthContext'
 import toast from 'react-hot-toast'
 
 export default function NotificationsPage() {
+  const { isSeller } = useAuth()
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -27,8 +30,10 @@ export default function NotificationsPage() {
     }
   }
 
+  const Layout = isSeller ? SellerLayout : PageWrapper
+
   return (
-    <PageWrapper>
+    <Layout>
       <div className="max-w-3xl mx-auto px-4 py-6">
         <h1 className="text-xl font-bold text-gray-900 mb-6">Notifications</h1>
         {loading ? <p className="text-sm text-gray-500">Loading notifications...</p> : notifications.length === 0 ? (
@@ -56,6 +61,6 @@ export default function NotificationsPage() {
           </div>
         )}
       </div>
-    </PageWrapper>
+    </Layout>
   )
 }
