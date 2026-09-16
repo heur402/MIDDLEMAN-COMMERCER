@@ -6,6 +6,7 @@ export const adminApi = {
   getUserById:  (id)     => api.get(`/admin/users/${id}`),
   banUser:      (id, data) => api.patch(`/admin/users/${id}/ban`, data),
   notifyUser:   (id, data) => api.post(`/admin/users/${id}/notify`, data),
+  getNotifications: () => api.get('/admin/notifications'),
   updateUser:   (id, data) => api.patch(`/admin/users/${id}`, data),
   deleteUser:   (id)       => api.delete(`/admin/users/${id}`),
 

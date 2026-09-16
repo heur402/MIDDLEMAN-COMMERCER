@@ -8,6 +8,8 @@ import { categoriesApi } from '../../api/categories.api'
 import Button from '../../components/common/Button'
 import Input from '../../components/common/Input'
 import toast from 'react-hot-toast'
+import DocxImportButton from '../../components/common/DocxImportButton'
+import { sellerApi } from '../../api/seller.api'
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState([])
@@ -20,6 +22,20 @@ export default function AdminCategoriesPage() {
   const [formIcon, setFormIcon] = useState('')
   const [formActive, setFormActive] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [importResult, setImportResult] = useState(null)
+
+  async function handleBulkImport(file) {
+    const formData = new FormData()
+    formData.append('file', file)
+    try {
+      const { data } = await sellerApi.bulkImportCategories(formData)
+      setImportResult(data.data)
+      toast.success(data.message)
+      fetchCategories()
+    } catch (err) {
+      toast.error(err.response?.data?.message ?? 'Import failed')
+    }
+  }
 
   useEffect(() => {
     fetchCategories()
@@ -105,11 +121,33 @@ export default function AdminCategoriesPage() {
                 <p className="text-sm text-gray-500">Add, edit, or delete product categories</p>
               </div>
               {!isEditing && (
-                <Button onClick={startCreate}>
-                  <Plus size={16} /> Add Category
-                </Button>
+                <div className="flex items-center gap-2">
+                  <DocxImportButton
+                    onDownloadTemplate={sellerApi.downloadCategoriesTemplate}
+                    templateFilename="categories_template.docx"
+                    onUpload={handleBulkImport}
+                    label="Bulk Import"
+                  />
+                  <Button onClick={startCreate}>
+                    <Plus size={16} /> Add Category
+                  </Button>
+                </div>
               )}
             </div>
+
+            {importResult && (
+              <div className="mb-4 bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
+                <div className="flex justify-between gap-3">
+                  <span>{importResult.created} categor{importResult.created === 1 ? 'y' : 'ies'} created.</span>
+                  <button onClick={() => setImportResult(null)} aria-label="Dismiss import result">×</button>
+                </div>
+                {importResult.errors?.length > 0 && (
+                  <ul className="mt-2 text-xs text-red-600 space-y-1">
+                    {importResult.errors.map((error) => <li key={error}>{error}</li>)}
+                  </ul>
+                )}
+              </div>
+            )}
 
             {isEditing && (
               <form onSubmit={handleSave} className="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100 space-y-4">

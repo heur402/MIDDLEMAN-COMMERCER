@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import {
-  TrendingUp, Users, Package, AlertTriangle, Tag, Menu, X, LogOut, ShieldCheck,
+  TrendingUp, Users, Package, AlertTriangle, Tag, Menu, X, LogOut, ShieldCheck, Bell, User,
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
@@ -12,6 +12,7 @@ const NAV = [
   { to: '/admin/listings',   icon: Package,       label: 'Listings'     },
   { to: '/admin/categories', icon: Tag,           label: 'Categories'   },
   { to: '/admin/disputes',   icon: AlertTriangle, label: 'Disputes'     },
+  { to: '/admin/notifications', icon: Bell,       label: 'Sent Notifications' },
 ]
 
 export default function AdminLayout({ children }) {
@@ -82,6 +83,12 @@ export default function AdminLayout({ children }) {
               <p className="text-xs text-gray-500 truncate">{user?.email}</p>
             </div>
           </div>
+          <button
+            onClick={() => navigate('/profile')}
+            className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-gray-800 hover:text-orange-400 transition-colors"
+          >
+            <User size={15} /> Profile
+          </button>
           <button
             onClick={handleLogout}
             className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-gray-800 hover:text-red-400 transition-colors"

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import {
-  TrendingUp, Package, ShoppingBag, LogOut, Menu, Store, Plus,
+  TrendingUp, Package, ShoppingBag, LogOut, Menu, Store, Plus, Bell, User,
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { cn } from '../../utils/cn'
@@ -11,6 +11,7 @@ const NAV = [
   { to: '/seller/listings',       icon: Package,     label: 'My Listings' },
   { to: '/seller/listings/new',   icon: Plus,        label: 'New Listing', highlight: true },
   { to: '/seller/orders',         icon: ShoppingBag, label: 'Orders'      },
+  { to: '/notifications',         icon: Bell,        label: 'Notifications' },
 ]
 
 export default function SellerLayout({ children }) {
@@ -92,6 +93,13 @@ export default function SellerLayout({ children }) {
               <p className="text-xs text-gray-400 truncate">{user?.email}</p>
             </div>
           </div>
+          <button
+            onClick={() => navigate('/profile')}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-500 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+          >
+            <User size={17} />
+            Profile
+          </button>
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors"

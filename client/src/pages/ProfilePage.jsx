@@ -11,8 +11,27 @@ export default function ProfilePage() {
   const { user, updateUser } = useAuth()
   const [form, setForm] = useState({ name: user?.name ?? '', phone: user?.phone ?? '' })
   const [saving, setSaving] = useState(false)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
 
   function set(field, value) { setForm((f) => ({ ...f, [field]: value })) }
+
+  async function handleAvatarChange(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const formData = new FormData()
+    formData.append('image', file)
+    setUploadingAvatar(true)
+    try {
+      const { data } = await authApi.uploadAvatar(formData)
+      updateUser(data.data)
+      toast.success('Profile photo updated')
+    } catch (err) {
+      toast.error(err.response?.data?.message ?? 'Failed to upload profile photo')
+    } finally {
+      setUploadingAvatar(false)
+      e.target.value = ''
+    }
+  }
 
   async function handleSave(e) {
     e.preventDefault()
@@ -52,9 +71,10 @@ export default function ProfilePage() {
                   ? <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                   : user?.name?.[0]?.toUpperCase()}
               </div>
-              <button className="absolute bottom-0 right-0 p-1.5 bg-orange-500 text-white rounded-full shadow hover:bg-orange-600 transition-colors" aria-label="Change avatar">
+              <label className="absolute bottom-0 right-0 p-1.5 bg-orange-500 text-white rounded-full shadow hover:bg-orange-600 transition-colors cursor-pointer" aria-label="Change avatar">
                 <Camera size={12} />
-              </button>
+                <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleAvatarChange} disabled={uploadingAvatar} />
+              </label>
             </div>
             <div>
               <p className="text-lg font-bold text-gray-900">{user?.name}</p>

@@ -10,7 +10,7 @@ import { paginate } from '../utils/paginate.js'
 // ── GET /api/admin/users ──────────────────────────────────────────────────────
 export const listUsers = asyncHandler(async (req, res) => {
   const { page, limit, q } = req.query
-  const filter = {}
+  const filter = { roles: { $ne: 'admin' } }
   if (q) filter.$or = [
     { name:  { $regex: q, $options: 'i' } },
     { email: { $regex: q, $options: 'i' } },
@@ -159,6 +159,7 @@ export const notifyUser = asyncHandler(async (req, res) => {
 
   await Notification.create({
     userId:  user._id,
+    createdBy: req.user.userId,
     type:    'admin:notice',
     title:   title.trim(),
     message: message?.trim() ?? '',
@@ -166,6 +167,16 @@ export const notifyUser = asyncHandler(async (req, res) => {
 
   console.log(`[ADMIN] Notification sent to user:${user._id} — ${title}`)
   res.json({ success: true, message: 'Notification sent' })
+})
+
+// ── GET /api/admin/notifications ────────────────────────────────────────────
+export const listSentNotifications = asyncHandler(async (req, res) => {
+  const notifications = await Notification.find({ createdBy: req.user.userId })
+    .populate('userId', 'name email')
+    .sort({ createdAt: -1 })
+    .limit(100)
+    .lean()
+  res.json({ success: true, data: notifications })
 })
 
 // ── GET /api/admin/analytics ──────────────────────────────────────────────────

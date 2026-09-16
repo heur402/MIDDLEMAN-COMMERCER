@@ -8,6 +8,7 @@ import mongoose from 'mongoose'
 const notificationSchema = new mongoose.Schema(
   {
     userId:  { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     type:    { type: String, required: true },      // e.g. 'order:placed'
     title:   { type: String, required: true },
     message: { type: String, default: '' },

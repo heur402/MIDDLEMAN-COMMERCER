@@ -3,7 +3,7 @@ import {
   listUsers, getUser, banUser, updateUser, deleteUser, notifyUser,
   listAllListings, deactivateListing,
   listAllDisputes, updateDispute,
-  getAnalytics,
+  getAnalytics, listSentNotifications,
 } from '../controllers/admin.controller.js'
 import { bulkImportCategories } from '../controllers/bulkImport.controller.js'
 import { downloadCategoriesTemplate } from '../controllers/template.controller.js'
@@ -26,6 +26,7 @@ router.patch('/users/:id',        validate(adminUpdateUserSchema), updateUser)
 router.delete('/users/:id',       deleteUser)
 router.patch('/users/:id/ban',    banUser)
 router.post('/users/:id/notify',  notifyUser)
+router.get('/notifications',     listSentNotifications)
 
 // Listings
 router.get('/listings',                  listAllListings)

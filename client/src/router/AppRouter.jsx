@@ -29,6 +29,7 @@ import ProfilePage           from '../pages/ProfilePage'
 
 // Chat
 import MessagesPage from '../pages/chat/MessagesPage'
+import NotificationsPage from '../pages/NotificationsPage'
 
 // Seller pages
 import SellerDashboardPage     from '../pages/seller/SellerDashboardPage'
@@ -45,6 +46,7 @@ import AdminDashboardPage   from '../pages/admin/AdminDashboardPage'
 import AdminUsersPage       from '../pages/admin/AdminUsersPage'
 import AdminListingsPage    from '../pages/admin/AdminListingsPage'
 import AdminCategoriesPage  from '../pages/admin/AdminCategoriesPage'
+import AdminNotificationsPage from '../pages/admin/AdminNotificationsPage'
 
 export default function AppRouter() {
   const { isSeller, isAdmin } = useAuth()
@@ -88,6 +90,7 @@ export default function AppRouter() {
       <Route path="/orders"    element={<ProtectedRoute><BuyerOrdersPage /></ProtectedRoute>} />
       <Route path="/orders/:id" element={<ProtectedRoute><BuyerOrderDetailPage /></ProtectedRoute>} />
       <Route path="/messages"  element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />
+      <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
 
       {/* ── Seller ──────────────────────────────────────────────── */}
       <Route path="/seller/dashboard"
@@ -121,6 +124,9 @@ export default function AppRouter() {
       />
       <Route path="/admin/categories"
         element={<ProtectedRoute role="admin"><AdminCategoriesPage /></ProtectedRoute>}
+      />
+      <Route path="/admin/notifications"
+        element={<ProtectedRoute role="admin"><AdminNotificationsPage /></ProtectedRoute>}
       />
 
       {/* ── Fallback ────────────────────────────────────────────── */}
