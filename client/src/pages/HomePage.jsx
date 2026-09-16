@@ -228,7 +228,6 @@ function CategoryGrid({ categories }) {
               className="group flex flex-col items-center gap-2 p-3 rounded-2xl hover:bg-gray-50 transition-all hover:scale-105 duration-200"
             >
               <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${CATEGORY_GRADIENTS[index % CATEGORY_GRADIENTS.length]} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow`}>
-                {category.icon && <span className="text-2xl leading-none">{category.icon}</span>}
               </div>
               <span className="text-[11px] font-medium text-gray-700 text-center leading-tight">
                 {category.name}
