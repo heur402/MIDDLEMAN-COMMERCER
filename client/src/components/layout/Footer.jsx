@@ -44,6 +44,7 @@ export default function Footer() {
               <FooterLink to="/register">Start Selling</FooterLink>
               <FooterLink to="/seller/dashboard">Seller Dashboard</FooterLink>
               <FooterLink to="/seller/listings">My Listings</FooterLink>
+              <FooterLink to="/admin">Admin</FooterLink>
             </ul>
           </div>
 
