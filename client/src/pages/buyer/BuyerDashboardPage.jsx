@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import {
-  Package, MessageCircle, Star, AlertTriangle, Settings, ChevronRight,
+  Package, Star, AlertTriangle, Settings, ChevronRight,
 } from 'lucide-react'
 import PageWrapper from '../../components/layout/PageWrapper'
 import { useAuth } from '../../context/AuthContext'
@@ -10,7 +10,6 @@ import { PageSpinner } from '../../components/common/Spinner'
 
 const QUICK_LINKS = [
   { to: '/orders',   icon: Package,       label: 'My Orders',  desc: 'Track purchases'      },
-  { to: '/messages', icon: MessageCircle, label: 'Messages',   desc: 'Chat with sellers'    },
   { to: '/reviews',  icon: Star,          label: 'Reviews',    desc: 'Reviews you left'     },
   { to: '/disputes', icon: AlertTriangle, label: 'Disputes',   desc: 'Open disputes'        },
   { to: '/profile',  icon: Settings,      label: 'Profile',    desc: 'Account settings'     },

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import {
-  Star, ShoppingCart, MessageCircle, Store, Package,
+  Star, ShoppingCart, Store, Package,
   ChevronRight, Shield,
 } from 'lucide-react'
 import PageWrapper from '../components/layout/PageWrapper'
@@ -180,16 +180,6 @@ export default function ProductDetailPage() {
               >
                 <ShoppingCart size={18} />
                 {addedToCart ? 'Added ✓' : 'Add to Cart'}
-              </Button>
-              <Button
-                size="lg"
-                variant="secondary"
-                className="sm:w-auto"
-                as={Link}
-                to={`/messages?seller=${seller._id}`}
-              >
-                <MessageCircle size={18} />
-                Message
               </Button>
             </div>
 

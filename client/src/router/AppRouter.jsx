@@ -27,8 +27,6 @@ import BuyerOrdersPage       from '../pages/buyer/BuyerOrdersPage'
 import BuyerOrderDetailPage  from '../pages/buyer/BuyerOrderDetailPage'
 import ProfilePage           from '../pages/ProfilePage'
 
-// Chat
-import MessagesPage from '../pages/chat/MessagesPage'
 import NotificationsPage from '../pages/NotificationsPage'
 
 // Seller pages
@@ -89,7 +87,6 @@ export default function AppRouter() {
       <Route path="/profile"   element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
       <Route path="/orders"    element={<ProtectedRoute><BuyerOrdersPage /></ProtectedRoute>} />
       <Route path="/orders/:id" element={<ProtectedRoute><BuyerOrderDetailPage /></ProtectedRoute>} />
-      <Route path="/messages"  element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />
       <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
 
       {/* ── Seller ──────────────────────────────────────────────── */}

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Camera, Plus, Trash2, MapPin } from 'lucide-react'
 import PageWrapper from '../components/layout/PageWrapper'
+import SellerLayout from '../components/layout/SellerLayout'
+import AdminLayout from '../components/layout/AdminLayout'
 import Input from '../components/common/Input'
 import Button from '../components/common/Button'
 import { useAuth } from '../context/AuthContext'
@@ -8,7 +10,7 @@ import { authApi } from '../api/auth.api'
 import toast from 'react-hot-toast'
 
 export default function ProfilePage() {
-  const { user, updateUser } = useAuth()
+  const { user, updateUser, isSeller, isAdmin } = useAuth()
   const [form, setForm] = useState({ name: user?.name ?? '', phone: user?.phone ?? '' })
   const [saving, setSaving] = useState(false)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
@@ -57,8 +59,10 @@ export default function ProfilePage() {
     }
   }
 
+  const Layout = isAdmin ? AdminLayout : isSeller ? SellerLayout : PageWrapper
+
   return (
-    <PageWrapper>
+    <Layout>
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         <h1 className="text-xl font-bold text-gray-900">My Profile</h1>
 
@@ -140,6 +144,6 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
-    </PageWrapper>
+    </Layout>
   )
 }
