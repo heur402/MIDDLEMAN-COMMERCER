@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Search, ShoppingCart, Menu, X, Store, Package, Home } from 'lucide-react'
+import { Search, ShoppingCart, Menu, X, Store, Package, Home, Bell } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
+import { useNotifications } from '../../context/NotificationContext'
 
 const CATEGORIES = [
   { label: 'All Products', path: '/browse' },
@@ -14,8 +15,9 @@ const CATEGORIES = [
 ]
 
 export default function Navbar() {
-  const { isSeller, isAdmin } = useAuth()
+  const { isSeller, isAdmin, isAuthenticated } = useAuth()
   const { totalItems } = useCart()
+  const { unreadCount } = useNotifications()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -60,6 +62,21 @@ export default function Navbar() {
                 Middle<span className="text-gray-900">Man</span>
               </span>
             </Link>
+
+            {isAuthenticated && (
+              <Link
+                to="/notifications"
+                className="relative p-2 rounded-full text-gray-600 hover:bg-gray-100 transition-colors"
+                aria-label={`Notifications (${unreadCount} unread)`}
+              >
+                <Bell size={22} />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 min-w-[20px] h-5 flex items-center justify-center rounded-full bg-orange-500 text-white text-[10px] font-bold px-1.5 shadow-sm">
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </span>
+                )}
+              </Link>
+            )}
 
             {/* Search — desktop */}
             <form

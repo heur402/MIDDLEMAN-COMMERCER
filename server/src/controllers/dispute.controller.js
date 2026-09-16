@@ -16,8 +16,8 @@ export const raiseDispute = asyncHandler(async (req, res) => {
   const order = await Order.findById(orderId)
   if (!order) throw ApiError.notFound('Order not found')
 
-  const isBuyer  = order.buyerId.toString()  === userId
-  const isSeller = order.sellerId.toString() === userId
+  const isBuyer  = order.buyerId?.toString()  === userId
+  const isSeller = order.sellerId?.toString() === userId
   if (!isBuyer && !isSeller) throw ApiError.forbidden('Not your order')
 
   // Only one dispute per order

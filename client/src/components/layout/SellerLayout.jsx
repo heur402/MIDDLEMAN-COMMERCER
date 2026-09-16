@@ -4,6 +4,7 @@ import {
   TrendingUp, Package, ShoppingBag, LogOut, Menu, Store, Plus, Bell, User,
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
+import { useNotifications } from '../../context/NotificationContext'
 import { cn } from '../../utils/cn'
 
 const NAV = [
@@ -16,6 +17,7 @@ const NAV = [
 
 export default function SellerLayout({ children }) {
   const { user, logout } = useAuth()
+  const { unreadCount } = useNotifications()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 
@@ -77,7 +79,12 @@ export default function SellerLayout({ children }) {
               }
             >
               <Icon size={17} />
-              {label}
+            <span className="flex-1">{label}</span>
+            {to === '/notifications' && unreadCount > 0 && (
+              <span className="min-w-[20px] h-5 flex items-center justify-center rounded-full bg-orange-500 text-white text-[10px] font-bold px-1">
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
             </NavLink>
           ))}
         </nav>

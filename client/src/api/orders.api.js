@@ -11,7 +11,7 @@ export const ordersApi = {
 
   // Mark delivered — guest passes email as query param
   markDelivered: (id, email) =>
-    api.patch(`/orders/${id}/deliver`, null, email ? { params: { email } } : {}),
+    api.patch(`/orders/${id}/deliver`, undefined, email ? { params: { email } } : undefined),
 
   // ── Authenticated buyers only ──────────────────────────────────────────────
   getMyOrders: (params) => api.get('/orders', { params }),
