@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import { Order } from '../models/Order.js'
+import { Dispute } from '../models/Dispute.js'
 import { Product } from '../models/Product.js'
 import { ApiError } from '../utils/ApiError.js'
 import { asyncHandler } from '../utils/asyncHandler.js'
@@ -127,6 +128,9 @@ export const markDelivered = asyncHandler(async (req, res) => {
   }
 
   if (!order) throw ApiError.notFound('Order not found')
+  if (await Dispute.exists({ orderId: order._id, status: { $in: ['open', 'under_review'] } })) {
+    throw ApiError.badRequest('Order actions are paused while its dispute is under review')
+  }
   if (order.status !== 'shipped') {
     throw ApiError.badRequest('Order must be shipped before marking as delivered')
   }

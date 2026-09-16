@@ -11,6 +11,9 @@ import { ordersApi } from '../../api/orders.api'
 import { formatCurrency } from '../../utils/formatCurrency'
 import { formatDate } from '../../utils/formatDate'
 import toast from 'react-hot-toast'
+import DisputeForm from '../../components/disputes/DisputeForm'
+import DisputeCard from '../../components/disputes/DisputeCard'
+import { disputesApi } from '../../api/disputes.api'
 
 const NEXT = {
   pending:   { status: 'confirmed',  label: 'Confirm Order',      needsTracking: false },
@@ -24,16 +27,18 @@ export default function SellerOrderDetailPage() {
   const [loading, setLoading]   = useState(true)
   const [updating, setUpdating] = useState(false)
   const [tracking, setTracking] = useState('')
+  const [dispute, setDispute] = useState(null)
 
   useEffect(() => {
     ordersApi.getSellerOrderById(id)
       .then(({ data }) => setOrder(data.data))
       .catch(() => setOrder(null))
       .finally(() => setLoading(false))
+    disputesApi.getByOrder(id).then(({ data }) => setDispute(data.data)).catch(() => {})
   }, [id])
 
   async function handleAction() {
-    const next = NEXT[order.status]
+    const next = dispute ? null : NEXT[order.status]
     if (!next) return
     if (next.needsTracking && !tracking.trim()) {
       toast.error('Please enter a tracking number')
@@ -122,6 +127,12 @@ export default function SellerOrderDetailPage() {
             </Button>
           </div>
         )}
+        <div className="bg-white rounded-xl shadow-sm p-5 mt-4">
+          <h2 className="text-sm font-semibold text-gray-700 mb-3">Dispute</h2>
+          {dispute ? <DisputeCard dispute={dispute} /> : (
+            <DisputeForm orderId={id} onSuccess={() => disputesApi.getByOrder(id).then(({ data }) => setDispute(data.data))} />
+          )}
+        </div>
       </div>
     </SellerLayout>
   )

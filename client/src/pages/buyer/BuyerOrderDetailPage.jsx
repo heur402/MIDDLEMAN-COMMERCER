@@ -10,12 +10,16 @@ import { ordersApi } from '../../api/orders.api'
 import { formatCurrency } from '../../utils/formatCurrency'
 import { formatDate } from '../../utils/formatDate'
 import toast from 'react-hot-toast'
+import DisputeForm from '../../components/disputes/DisputeForm'
+import DisputeCard from '../../components/disputes/DisputeCard'
+import { disputesApi } from '../../api/disputes.api'
 
 export default function BuyerOrderDetailPage() {
   const { id } = useParams()
   const [order, setOrder] = useState(null)
   const [loading, setLoading] = useState(true)
   const [confirming, setConfirming] = useState(false)
+  const [dispute, setDispute] = useState(null)
 
   useEffect(() => {
     ordersApi
@@ -23,6 +27,7 @@ export default function BuyerOrderDetailPage() {
       .then(({ data }) => setOrder(data.data))
       .catch(() => setOrder(null))
       .finally(() => setLoading(false))
+    disputesApi.getByOrder(id).then(({ data }) => setDispute(data.data)).catch(() => {})
   }, [id])
 
   async function markDelivered() {
@@ -111,11 +116,17 @@ export default function BuyerOrderDetailPage() {
         </div>
 
         {/* Action: mark delivered */}
-        {order.status === 'shipped' && (
+        {order.status === 'shipped' && !dispute && (
           <Button fullWidth size="lg" onClick={markDelivered} loading={confirming}>
             Confirm Delivery Received
           </Button>
         )}
+        <div className="mt-4 bg-white rounded-xl shadow-sm p-5">
+          <h2 className="text-sm font-semibold text-gray-700 mb-3">Dispute</h2>
+          {dispute ? <DisputeCard dispute={dispute} /> : (
+            <DisputeForm orderId={id} onSuccess={() => disputesApi.getByOrder(id).then(({ data }) => setDispute(data.data))} />
+          )}
+        </div>
       </div>
     </PageWrapper>
   )

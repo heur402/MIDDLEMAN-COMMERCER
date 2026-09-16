@@ -1,5 +1,6 @@
 import { Product } from '../models/Product.js'
 import { Order } from '../models/Order.js'
+import { Dispute } from '../models/Dispute.js'
 import { ApiError } from '../utils/ApiError.js'
 import { asyncHandler } from '../utils/asyncHandler.js'
 import { paginate } from '../utils/paginate.js'
@@ -100,6 +101,9 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
   const { status, trackingNumber, note } = req.body
   const order = await Order.findOne({ _id: req.params.id, sellerId: req.user.userId })
   if (!order) throw ApiError.notFound('Order not found')
+  if (await Dispute.exists({ orderId: order._id, status: { $in: ['open', 'under_review'] } })) {
+    throw ApiError.badRequest('Order actions are paused while its dispute is under review')
+  }
 
   const VALID_TRANSITIONS = { pending: 'confirmed', confirmed: 'shipped', delivered: 'completed' }
   if (VALID_TRANSITIONS[order.status] !== status) {

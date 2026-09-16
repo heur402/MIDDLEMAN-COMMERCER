@@ -137,7 +137,7 @@ export const listAllDisputes = asyncHandler(async (req, res) => {
 // ── PATCH /api/admin/disputes/:id ────────────────────────────────────────────
 export const updateDispute = asyncHandler(async (req, res) => {
   const { status, resolution, adminNotes } = req.body
-  const dispute = await Dispute.findById(req.params.id)
+  const dispute = await Dispute.findById(req.params.id).populate('orderId', 'buyerId sellerId')
   if (!dispute) throw ApiError.notFound('Dispute not found')
 
   if (status)     dispute.status     = status
@@ -146,6 +146,17 @@ export const updateDispute = asyncHandler(async (req, res) => {
   if (status === 'resolved') dispute.resolvedAt = new Date()
 
   await dispute.save()
+  const recipients = [dispute.orderId?.buyerId, dispute.orderId?.sellerId].filter(Boolean)
+  if (recipients.length) {
+    await Notification.insertMany(recipients.map((userId) => ({
+      userId,
+      createdBy: req.user.userId,
+      type: status === 'resolved' ? 'dispute:resolved' : 'dispute:updated',
+      title: 'Dispute updated',
+      message: `Your dispute for order #${dispute.orderId._id.toString().slice(-8).toUpperCase()} was updated.`,
+      data: { disputeId: dispute._id, orderId: dispute.orderId._id },
+    })))
+  }
   res.json({ success: true, data: dispute })
 })
 

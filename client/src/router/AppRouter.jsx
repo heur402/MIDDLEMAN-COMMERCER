@@ -25,6 +25,7 @@ import TermsPage   from '../pages/static/TermsPage'
 import BuyerDashboardPage    from '../pages/buyer/BuyerDashboardPage'
 import BuyerOrdersPage       from '../pages/buyer/BuyerOrdersPage'
 import BuyerOrderDetailPage  from '../pages/buyer/BuyerOrderDetailPage'
+import BuyerDisputesPage      from '../pages/buyer/BuyerDisputesPage'
 import ProfilePage           from '../pages/ProfilePage'
 
 import NotificationsPage from '../pages/NotificationsPage'
@@ -45,6 +46,7 @@ import AdminUsersPage       from '../pages/admin/AdminUsersPage'
 import AdminListingsPage    from '../pages/admin/AdminListingsPage'
 import AdminCategoriesPage  from '../pages/admin/AdminCategoriesPage'
 import AdminNotificationsPage from '../pages/admin/AdminNotificationsPage'
+import AdminDisputesPage      from '../pages/admin/AdminDisputesPage'
 
 export default function AppRouter() {
   const { isSeller, isAdmin } = useAuth()
@@ -87,6 +89,7 @@ export default function AppRouter() {
       <Route path="/profile"   element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
       <Route path="/orders"    element={<ProtectedRoute><BuyerOrdersPage /></ProtectedRoute>} />
       <Route path="/orders/:id" element={<ProtectedRoute><BuyerOrderDetailPage /></ProtectedRoute>} />
+      <Route path="/disputes" element={<ProtectedRoute><BuyerDisputesPage /></ProtectedRoute>} />
       <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
 
       {/* ── Seller ──────────────────────────────────────────────── */}
@@ -124,6 +127,9 @@ export default function AppRouter() {
       />
       <Route path="/admin/notifications"
         element={<ProtectedRoute role="admin"><AdminNotificationsPage /></ProtectedRoute>}
+      />
+      <Route path="/admin/disputes"
+        element={<ProtectedRoute role="admin"><AdminDisputesPage /></ProtectedRoute>}
       />
 
       {/* ── Fallback ────────────────────────────────────────────── */}
