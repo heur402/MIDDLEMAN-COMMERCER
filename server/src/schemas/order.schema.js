@@ -44,7 +44,7 @@ export const placeOrderSchema = z.object({
 
 /** PATCH /api/seller/orders/:id/status */
 export const updateOrderStatusSchema = z.object({
-  status:         z.enum(['confirmed', 'shipped', 'cancelled']),
+  status:         z.enum(['confirmed', 'shipped', 'completed', 'cancelled']),
   trackingNumber: z.string().trim().optional(),
   note:           z.string().trim().max(300).optional(),
 })

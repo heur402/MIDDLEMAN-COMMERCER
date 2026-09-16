@@ -101,7 +101,7 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
   const order = await Order.findOne({ _id: req.params.id, sellerId: req.user.userId })
   if (!order) throw ApiError.notFound('Order not found')
 
-  const VALID_TRANSITIONS = { pending: 'confirmed', confirmed: 'shipped' }
+  const VALID_TRANSITIONS = { pending: 'confirmed', confirmed: 'shipped', delivered: 'completed' }
   if (VALID_TRANSITIONS[order.status] !== status) {
     throw ApiError.badRequest(`Cannot transition from ${order.status} to ${status}`)
   }

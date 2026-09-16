@@ -13,8 +13,9 @@ import { formatDate } from '../../utils/formatDate'
 import toast from 'react-hot-toast'
 
 const NEXT = {
-  pending:   { status: 'confirmed', label: 'Confirm Order',   needsTracking: false },
-  confirmed: { status: 'shipped',   label: 'Mark as Shipped', needsTracking: true  },
+  pending:   { status: 'confirmed',  label: 'Confirm Order',      needsTracking: false },
+  confirmed: { status: 'shipped',    label: 'Mark as Shipped',    needsTracking: true  },
+  delivered: { status: 'completed',  label: 'Mark as Completed',  needsTracking: false },
 }
 
 export default function SellerOrderDetailPage() {

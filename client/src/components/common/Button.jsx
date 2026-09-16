@@ -33,10 +33,11 @@ export default function Button({
   fullWidth = false,
   className,
   disabled,
+  as: Tag = 'button',
   ...props
 }) {
   return (
-    <button
+    <Tag
       className={cn(
         'inline-flex items-center justify-center gap-2 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 disabled:opacity-50 disabled:cursor-not-allowed',
         variants[variant],
@@ -44,11 +45,11 @@ export default function Button({
         fullWidth && 'w-full',
         className
       )}
-      disabled={disabled || loading}
+      disabled={Tag === 'button' ? (disabled || loading) : undefined}
       {...props}
     >
       {loading && <Spinner size="sm" className="text-current" />}
       {children}
-    </button>
+    </Tag>
   )
 }
