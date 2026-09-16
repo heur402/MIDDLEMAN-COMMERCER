@@ -57,7 +57,7 @@ export default function AdminCategoriesPage() {
     setIsEditing('new')
     setFormName('')
     setFormDesc('')
-    setFormIcon('🏷️')
+    setFormIcon('')
     setFormActive(true)
   }
 
@@ -65,7 +65,7 @@ export default function AdminCategoriesPage() {
     setIsEditing(cat._id)
     setFormName(cat.name)
     setFormDesc(cat.description ?? '')
-    setFormIcon(cat.icon ?? '🏷️')
+    setFormIcon(cat.icon ?? '')
     setFormActive(cat.isActive)
   }
 

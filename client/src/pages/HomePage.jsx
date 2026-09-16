@@ -1,27 +1,24 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  Smartphone, Shirt, Home as HomeIcon, Sparkles, Dumbbell,
-  Baby, BookOpen, Car, Grid2x2, Zap, ChevronRight, Clock,
-  ArrowRight, Star, Shield, Truck, Headphones, Gift, 
-  TrendingUp, Clock as ClockIcon, Award, Flame
+  ChevronRight, ArrowRight, Star, Shield, Truck,
+  Headphones, Gift, TrendingUp, Clock as ClockIcon, Award, Flame
 } from 'lucide-react'
 import PageWrapper from '../components/layout/PageWrapper'
 import ProductGrid from '../components/products/ProductGrid'
 import { productsApi } from '../api/products.api'
+import { categoriesApi } from '../api/categories.api'
 import { countdown } from '../utils/formatDate'
 
-// ── Category grid data ────────────────────────────────────────────────────────
-const CATEGORIES = [
-  { label: 'Electronics', value: 'electronics', icon: Smartphone, gradient: 'from-blue-400 to-blue-600' },
-  { label: 'Clothing', value: 'clothing', icon: Shirt, gradient: 'from-pink-400 to-pink-600' },
-  { label: 'Home', value: 'home', icon: HomeIcon, gradient: 'from-amber-400 to-amber-600' },
-  { label: 'Beauty', value: 'beauty', icon: Sparkles, gradient: 'from-purple-400 to-purple-600' },
-  { label: 'Sports', value: 'sports', icon: Dumbbell, gradient: 'from-emerald-400 to-emerald-600' },
-  { label: 'Toys', value: 'toys', icon: Baby, gradient: 'from-rose-400 to-rose-600' },
-  { label: 'Books', value: 'books', icon: BookOpen, gradient: 'from-indigo-400 to-indigo-600' },
-  { label: 'Automotive', value: 'automotive', icon: Car, gradient: 'from-slate-400 to-slate-600' },
-  { label: 'All', value: '', icon: Grid2x2, gradient: 'from-orange-400 to-orange-600' },
+const CATEGORY_GRADIENTS = [
+  'from-blue-400 to-blue-600',
+  'from-pink-400 to-pink-600',
+  'from-amber-400 to-amber-600',
+  'from-purple-400 to-purple-600',
+  'from-emerald-400 to-emerald-600',
+  'from-rose-400 to-rose-600',
+  'from-indigo-400 to-indigo-600',
+  'from-slate-400 to-slate-600',
 ]
 
 const FLASH_END = new Date(Date.now() + 8 * 60 * 60 * 1000)
@@ -36,6 +33,7 @@ const TRUST_BADGES = [
 
 // ─── Main Component ──────────────────────────────────────────────────────────
 export default function HomePage() {
+  const [categories, setCategories] = useState([])
   const [newProducts, setNewProducts] = useState([])
   const [flashProducts, setFlashProducts] = useState([])
   const [featuredProducts, setFeaturedProducts] = useState([])
@@ -62,6 +60,9 @@ export default function HomePage() {
   }, [])
 
   useEffect(() => {
+    categoriesApi.list()
+      .then(({ data }) => setCategories(data.data ?? []))
+      .catch(() => setCategories([]))
     fetchSection({ sort: 'newest', limit: 10 }, setNewProducts, setLoadingNew)
     fetchSection({ sort: 'price_asc', limit: 10 }, setFlashProducts, setLoadingFlash)
     fetchSection({ sort: 'rating', limit: 10 }, setFeaturedProducts, setLoadingFeatured)
@@ -73,7 +74,7 @@ export default function HomePage() {
       <HeroBanner />
 
       {/* ── Category Grid ── */}
-      <CategoryGrid />
+      <CategoryGrid categories={categories} />
 
       {/* ── Flash Sale ── */}
       <FlashSaleSection 
@@ -209,7 +210,7 @@ function HeroBanner() {
 }
 
 // ─── Category Grid ──────────────────────────────────────────────────────────
-function CategoryGrid() {
+function CategoryGrid({ categories }) {
   return (
     <div className="relative max-w-7xl mx-auto px-4 -mt-8 z-10">
       <div className="bg-white rounded-3xl shadow-xl p-6">
@@ -220,17 +221,17 @@ function CategoryGrid() {
           </Link>
         </div>
         <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-9 gap-3">
-          {CATEGORIES.map(({ label, value, icon: Icon, gradient }) => (
+          {categories.map((category, index) => (
             <Link
-              key={label}
-              to={`/browse${value ? `?category=${value}` : ''}`}
+              key={category._id}
+              to={`/browse?category=${category._id}`}
               className="group flex flex-col items-center gap-2 p-3 rounded-2xl hover:bg-gray-50 transition-all hover:scale-105 duration-200"
             >
-              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow`}>
-                <Icon size={24} className="text-white" />
+              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${CATEGORY_GRADIENTS[index % CATEGORY_GRADIENTS.length]} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow`}>
+                {category.icon && <span className="text-2xl leading-none">{category.icon}</span>}
               </div>
               <span className="text-[11px] font-medium text-gray-700 text-center leading-tight">
-                {label}
+                {category.name}
               </span>
             </Link>
           ))}
