@@ -43,6 +43,12 @@ export default function LoginPage() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
           <h1 className="text-xl font-bold text-gray-900 mb-6">Sign in to your account</h1>
           <LoginForm />
+          <p className="text-center text-sm text-gray-500 mt-6">
+            If you are an admin,{' '}
+            <Link to="/admin/login" className="text-orange-500 hover:underline font-medium">
+              log in here
+            </Link>
+          </p>
         </div>
       </div>
     </div>
