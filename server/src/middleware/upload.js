@@ -7,12 +7,21 @@ import { cloudinaryEnabled } from '../config/cloudinary.js'
 // ── Allowed MIME types ────────────────────────────────────────────────────────
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
 const MAX_SIZE_BYTES = 5 * 1024 * 1024 // 5 MB
+const DOCX_MIME = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 
 function fileFilter(_req, file, cb) {
   if (ALLOWED_TYPES.includes(file.mimetype)) {
     cb(null, true)
   } else {
     cb(ApiError.badRequest('Only JPG, PNG, and WEBP images are allowed'), false)
+  }
+}
+
+function docxFilter(_req, file, cb) {
+  if (file.mimetype === DOCX_MIME || file.originalname.endsWith('.docx')) {
+    cb(null, true)
+  } else {
+    cb(ApiError.badRequest('Only .docx files are allowed'), false)
   }
 }
 
@@ -49,6 +58,15 @@ export function uploadMiddleware(folder = 'misc', maxFiles = 5) {
     fileFilter,
     limits: { fileSize: MAX_SIZE_BYTES },
   }).array('images', maxFiles)
+}
+
+/** Single .docx upload middleware (memory storage always) */
+export function uploadDocx(fieldName = 'file') {
+  return multer({
+    storage: memoryStorage,
+    fileFilter: docxFilter,
+    limits: { fileSize: 10 * 1024 * 1024 },
+  }).single(fieldName)
 }
 
 /** Single-file upload middleware (e.g. avatar) */
