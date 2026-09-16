@@ -76,7 +76,7 @@ async function seed() {
     { name: 'Books', slug: 'books', description: 'Novels, textbooks, and guides', createdBy: admin._id },
   ]
   const seededCats = await Category.insertMany(categoriesData)
-  console.log(`🏷️  Created ${seededCats.length} seed categories`)
+  console.log(`Created ${seededCats.length} seed categories`)
 
   const catMap = {}
   seededCats.forEach((cat) => {

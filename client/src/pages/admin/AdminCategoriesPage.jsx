@@ -226,7 +226,7 @@ export default function AdminCategoriesPage() {
                       ) : (
                         categories.map((cat) => (
                           <tr key={cat._id} className="hover:bg-gray-50/50">
-                            <td className="px-6 py-4 text-lg">{cat.icon ?? '🏷️'}</td>
+                            <td className="px-6 py-4 text-lg">{cat.icon ?? ''}</td>
                             <td className="px-6 py-4 font-semibold text-gray-900">{cat.name}</td>
                             <td className="px-6 py-4 font-mono text-xs">{cat.slug}</td>
                             <td className="px-6 py-4 text-xs text-gray-500 max-w-xs truncate">{cat.description || '—'}</td>
